@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SecteurActivite;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class SecteurActiviteSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        SecteurActivite::factory()->count(5)->create();
     }
 }
