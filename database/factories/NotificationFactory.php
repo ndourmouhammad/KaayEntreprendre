@@ -18,6 +18,10 @@ class NotificationFactory extends Factory
     {
         return [
             //
+            'contenu' => $this->faker->sentence(5),
+            'vu' => $this->faker->boolean(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
