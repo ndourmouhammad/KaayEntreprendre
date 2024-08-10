@@ -17,10 +17,22 @@ class RolesAndPermissionsSeeder extends Seeder
         // Réinitialiser le cache des rôles et permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+        
+
         // Créer des permissions pour admin
         Permission::create(['name' => 'activer_user']);
         Permission::create(['name' => 'desactiver_user']);
+        Permission::create(['name' => 'lister_users']);
         Permission::create(['name' => 'supprimer_user']);
+        Permission::create(['name' => 'changer_role']);
+        Permission::create(['name' => 'lister_roles']);
+        Permission::create(['name' => 'ajouter_role']);
+        Permission::create(['name' => 'supprimer_role']);
+        Permission::create(['name' => 'modifier_role']);
+        Permission::create(['name' => 'lister_permissions']);
+        Permission::create(['name' => 'ajouter_permission']);
+        Permission::create(['name' => 'supprimer_permission']);
+        Permission::create(['name' => 'modifier_permission']);
         Permission::create(['name' => 'ajouter_evenement']);
         Permission::create(['name' => 'modifier_evenement']);
         Permission::create(['name' => 'supprimer_evenement']);
@@ -55,6 +67,18 @@ class RolesAndPermissionsSeeder extends Seeder
             'ajouter_guide',
             'modifier_guide',
             'supprimer_guide',
+            'lister_users',
+            'supprimer_user',
+            'changer_role',
+            'lister_roles',
+            'ajouter_role',
+            'supprimer_role',
+            'modifier_role',
+            'lister_permissions',
+            'ajouter_permission',
+            'supprimer_permission',
+            'modifier_permission',
+            
         ]);
 
         // Créer le rôle "coach" et leur assigner des permissions
