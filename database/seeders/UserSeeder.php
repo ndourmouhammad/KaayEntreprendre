@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Discussion;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DiscussionSeeder extends Seeder
+use App\Models\User;
+
+class UserSeeder extends Seeder
 {
     public function run()
     {
-        Discussion::factory()->count(5)->create();
+        User::factory()->count(5)->create();
     }
 }
 
