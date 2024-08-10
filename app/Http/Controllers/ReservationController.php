@@ -1,22 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
+
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controller;
 
-class ReservationController extends BaseController
+class ReservationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
+    { 
         $reservations= Reservation::where('user_id', auth::id())->get();
-      return response()->json($reservations);
-        //
+      
+        return response()->json([
+            'status' => true,
+            'message' => "Réservations affichées avec succès",
+            "data" => $reservations
+        ], 200);
     }
 
     /**
@@ -30,16 +35,31 @@ class ReservationController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store( Request $request)
+    public function store(Request $request)
     {
-        $validated= $request->validate([
-            'evenement_id'=> 'required|exists:evenements,id',
-            'status'=> 'nullable|in:en_attente,accepte,refuse',
+        $validatedData = Validator::make($request->all(), [
+            'evenement_id' => 'required|exists:evenements,id',
+            'status' => 'nullable|in:en_attente,accepte,refuse',
         ]);
-      $validated['user_id']=auth::id();
-      
-      $reservation= Reservation::create($validated);
-      return response()->json([$reservation,201]);
+
+        if ($validatedData->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Validation error",
+                "data" => $validatedData->errors()
+            ], 400);
+        }
+
+        $validated = $validatedData->validated();
+        $validated['user_id'] = auth::id();
+
+        $reservation = Reservation::create($validated);
+
+        return response()->json([
+            "status" => true,
+            "message" => "Réservation ajoutée avec succès",
+            "data" => $reservation
+        ], 201);
     }
 
     /**
@@ -47,8 +67,7 @@ class ReservationController extends BaseController
      */
     public function show($id)
     {
-        //
-        $reservation= Reservation::findOrFail($id);
+        $reservation = Reservation::findOrFail($id);
         $this->authorize('view', $reservation);
         return response()->json($reservation);
     }
@@ -64,17 +83,31 @@ class ReservationController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
-        $reservation= Reservation::findOrFail($id);
-        $this->authorize('update', $reservation);
-        $validated=$request->validate([
-           'evenement_id'=> 'required|exists:evenements,id',
-            'status'=> 'nullable|in:en_attente,accepte,refuse', 
+        $validatedData = Validator::make($request->all(), [
+            'evenement_id' => 'required|exists:evenements,id',
+            'status' => 'nullable|in:en_attente,accepte,refuse',
         ]);
-        $reservation->update();
-        return response()->json([$reservation,201]);
 
+        if ($validatedData->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Validation error",
+                "data" => $validatedData->errors()
+            ], 400);
+        }
+
+        $reservation = Reservation::findOrFail($id);
+        $this->authorize('update', $reservation);
+
+        $reservation->update($validatedData->validated());
+
+        return response()->json([
+            "status" => true,
+            "message" => "Réservation mise à jour avec succès",
+            "data" => $reservation
+        ], 200);
     }
 
     /**
@@ -82,9 +115,14 @@ class ReservationController extends BaseController
      */
     public function destroy($id)
     {
-        $reservation= Reservation::findOrFail($id);
-        $this->authorize('delete',$reservation);
+        $reservation = Reservation::findOrFail($id);
+        $this->authorize('delete', $reservation);
+
         $reservation->delete();
-        return response()->json([],204);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Réservation supprimée avec succès'
+        ], 204);
     }
 }
