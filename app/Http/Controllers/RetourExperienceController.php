@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\RetourExperience;
 use App\Http\Requests\StoreRetourExperienceRequest;
 use App\Http\Requests\UpdateRetourExperienceRequest;
-use App\Models\RetourExperience;
 
 class RetourExperienceController extends Controller
 {
@@ -13,54 +14,66 @@ class RetourExperienceController extends Controller
      */
     public function index()
     {
-        //
+        //liste des retours d'exeperiences
+        $RetourExperience = RetourExperience::all();
+        return response()->json($RetourExperience);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRetourExperienceRequest $request)
-    {
-        //
+        // Ajout d'un retour d'expérience
+        $retourExperience = RetourExperience::create($request->all());
+        return response()->json($retourExperience);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(RetourExperience $retourExperience)
+    public function show( $id)
     {
-        //
+        // afficher un retour d'expérience spécifique
+        $retourExperience = RetourExperience::find($id);
+        if (!$retourExperience) {
+            return response()->json(['message' => 'reretourExperience non trouvé'], 404);
+        }
+
+        return response()->json($retourExperience);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(RetourExperience $retourExperience)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRetourExperienceRequest $request, RetourExperience $retourExperience)
-    {
-        //
-    }
+    public function update(Request $request, $id)
+{
+    $retourExperience = RetourExperience::findOrFail($id);
+    $retourExperience->update($request->all());
+
+    return response()->json($retourExperience);
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(RetourExperience $retourExperience)
     {
-        //
+        // Supprimer un retour d'expérience
+        $retourExperience->delete();
+        return response()->json(['message' => 'Retour d\'expérience supprimé']);
+    }
+
+    public function restore($id){
+        // Restaurer un retour d'expérience
+        $retourExperience = RetourExperience::withTrashed()->find($id);
+        if (!$retourExperience) {
+            return response()->json(['message' => 'Retour d\'expérience non trouvé'], 404);
+        }
+
+        $retourExperience->restore();
+        return response()->json($retourExperience);
     }
 }
