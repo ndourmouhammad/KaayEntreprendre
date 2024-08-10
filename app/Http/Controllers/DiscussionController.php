@@ -86,4 +86,9 @@ class DiscussionController extends Controller
         $discussion->delete();
         return response()->json($discussion,200);
     }
+    public function recherche(Request $request){
+        $query=$request->input ('query');
+        $discussion=Discussion::where('libelle',"%{$query}")->get();
+        return response()->json($discussion,200);
+    }
 }
