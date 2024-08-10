@@ -19,7 +19,11 @@ class CommentaireController extends Controller
     {
         //
         $commentaires=Commentaire::where("discussion_id", $discussionId)->get();
-        return response()->json($commentaires);
+        return response()->json([
+            'status' => true,
+            'message' => 'Commentaires récupérés avec succès',
+            'data' => $commentaires
+        ], 200);
     }
 
     /**
@@ -39,14 +43,22 @@ class CommentaireController extends Controller
             "contenu"=> "required|string",
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors'=> $validator->errors()],422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $validator->errors()
+            ], 422);
         }
         $commentaires=Commentaire::create([
             'discussion_id'=>$discussionId,
             'user_id'=> Auth::id(),
             'contenu'=> $request->contenu,
         ]);
-        return response()->json($commentaires,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Commentaire ajouté avec succès',
+            'data' => $commentaires
+        ], 201);
     }
 
     /**
@@ -71,6 +83,7 @@ class CommentaireController extends Controller
     public function update(Request $request, $id)
     {
         $commentaire=Commentaire::findOrFail($id);
+
         if($commentaire->user_id != Auth::id()){
             return response()->json(["error"=>"Unauthorized"],403);
         }
@@ -78,23 +91,34 @@ class CommentaireController extends Controller
             "contenu"=> "required|string",
         ]);
         if ($validator->fails()) {
-            return response()->json(["errors"=> $validator->errors()],422);
+            return response()->json([
+                'status' => false,
+                'message' => 'Erreur de validation',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $commentaire->update($request->only("contenu"));
-        return response()->json($commentaire,200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Commentaire mis à jour avec succès',
+            'data' => $commentaire
+        ], 200);
 
     }
     
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($discussionId,$id)
     {
+        $discussion = Discussion::findOrFail($discussionId);
         $commentaires=Commentaire::findOrFail($id);
+        $commentaires = $discussion->commentaires()->findOrFail($id);
         if($commentaires->user_id != Auth::id()){
             return response()->json(["error"=> "Unauthorized"],403);
         }
+       
         $commentaires->delete();
         return response()->json(['message'=>'commentaire supprimer avec succé'],200);
     }
