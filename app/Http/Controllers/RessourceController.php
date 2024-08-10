@@ -24,6 +24,15 @@ class RessourceController extends Controller
      */
     public function store(StoreRessourceRequest $request)
     {
+        $request->validate([
+
+            'titre' =>'required|string|max:255',
+            'contenu' => 'required|varchar|max:255',
+            'description'=> 'required|text',
+            'image' =>'required|string|',
+            'categorie_id'=>'required',
+            'user_id' => 'required'
+        ]);
        return Ressource::create($request->all());
     }
 
@@ -48,6 +57,16 @@ class RessourceController extends Controller
      */
     public function update(UpdateRessourceRequest $request, Ressource $ressource)
     {
+        $request->validate([
+
+            'titre' =>'required|string|max:255',
+            'contenu' => 'required|varchar|max:255',
+            'description'=> 'required|text',
+            'image' =>'required|string|',
+            'categorie_id'=>'required',
+            'user_id' => 'required'
+        ]);
+
         $ressource->update($request->all());
 
         if (!$ressource) {
