@@ -13,23 +13,18 @@ class RessourceController extends Controller
      */
     public function index()
     {
-        //
+       return Ressource::all();
+
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreRessourceRequest $request)
     {
-        //
+       return Ressource::create($request->all());
     }
 
     /**
@@ -37,23 +32,29 @@ class RessourceController extends Controller
      */
     public function show(Ressource $ressource)
     {
-        //
+
+
+        if (!$ressource) {
+
+            return response()->json(['message'=>'ressource non trouvée'],404);
+        }
+
+        return $ressource;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Ressource $ressource)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateRessourceRequest $request, Ressource $ressource)
     {
-        //
+        $ressource->update($request->all());
+
+        if (!$ressource) {
+            return response()->json(['message'=>'ressource non trouvée'],404);
+        }
+
+        return response()->json($ressource,200);
     }
 
     /**
@@ -61,6 +62,13 @@ class RessourceController extends Controller
      */
     public function destroy(Ressource $ressource)
     {
-        //
+
+        $ressource->delete();
+
+        if (!$ressource) {
+            return response()->json(['message'=> 'ressource non trouvée'],404);
+        }
+
+        return $ressource;
     }
 }
