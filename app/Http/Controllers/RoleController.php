@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Validator;
+
 class RoleController extends Controller
 {
     //lister les roles dans mon api
@@ -49,18 +51,28 @@ class RoleController extends Controller
     public function givePermissions(Request $request, $id)
 {
     // Valider la requête pour s'assurer que les permissions sont fournies
-    $validated = $request->validate([
-        'permissions' => 'required|array',
-        'permissions.*' => 'exists:permissions,name',
+    $validatedData = Validator::make($request->all(), [
+        'name' => 'required|exists:permissions,name',
     ]);
+
+    if ($validatedData->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Validation error',
+            'data' => $validatedData->errors()
+        ], 400);
+    }
 
     // Trouver le rôle par son ID
     $role = Role::findOrFail($id);
 
     // Synchroniser les permissions
-    $role->syncPermissions($validated['permissions']);
+    $role->givePermissionTo($validatedData->validated()['name']);
 
     // Retourner une réponse JSON personnalisée avec le rôle mis à jour
-    return response()->json(['message' => 'Les permissions ont bien été attribuées', 'role' => $role], 200);
+    return response()->json([
+        'message' => 'Les permissions ont bien été attribuées',
+        'role' => $role
+    ], 200);
 }
 }

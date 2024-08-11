@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreEvenementRequest extends FormRequest
 {
@@ -27,7 +29,18 @@ class StoreEvenementRequest extends FormRequest
             'date_debut' => 'required|date|before_or_equal:date_fin',
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'prix' => 'required|integer|min:0',
-            'image' => 'required|string|max:255',
+            'image' => 'required|mimes:jpeg,jpg,png|max:2048',
         ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     */
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'errors'      => $validator->errors()
+        ], 422));
     }
 }

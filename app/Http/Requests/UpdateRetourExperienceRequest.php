@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateRetourExperienceRequest extends FormRequest
 {
@@ -21,9 +23,17 @@ class UpdateRetourExperienceRequest extends FormRequest
     {
         return [
             'libelle' => 'sometimes|string|max:255',
-            'image' => 'sometimes|string|max:255',
+            'image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
             'contenu' => 'sometimes|string',
-            'user_id' => 'sometimes|exists:users,id',
+            
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success'   => false,
+            'errors'      => $validator->errors()
+        ], 422));
     }
 }

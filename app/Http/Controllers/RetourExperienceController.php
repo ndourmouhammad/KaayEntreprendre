@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RetourExperience;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreRetourExperienceRequest;
 use App\Http\Requests\UpdateRetourExperienceRequest;
 
@@ -16,64 +17,77 @@ class RetourExperienceController extends Controller
     {
         //liste des retours d'exeperiences
         $RetourExperience = RetourExperience::all();
-        return response()->json($RetourExperience);
+        return $this->customJsonResponse("Liste des retours d'experiences", $RetourExperience);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function store(Request $request)
+    public function store(StoreRetourExperienceRequest $request)
     {
-        // Ajout d'un retour d'expérience
-        $retourExperience = RetourExperience::create($request->all());
-        return response()->json($retourExperience);
+        // Créer une nouvelle instance de RetourExperience
+        $retourExperience = new RetourExperience();
+
+        // Remplir le modèle avec les données validées
+        $retourExperience->fill($request->validated());
+
+        // Ajouter le user_id de l'utilisateur connecté
+        $retourExperience->user_id = auth()->id();
+
+        // Vérifier si une image a été téléchargée
+        if ($request->hasFile('image')) {
+            // Stocker l'image et enregistrer le chemin d'accès
+            $retourExperience->image = $request->file('image')->store('public/photos');
+        }
+
+        // Sauvegarder le modèle dans la base de données
+        $retourExperience->save();
+
+        // Retourner une réponse JSON personnalisée
+        return $this->customJsonResponse("Retour d'experience ajouté avec succès", $retourExperience, 201);
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         // afficher un retour d'expérience spécifique
         $retourExperience = RetourExperience::find($id);
         if (!$retourExperience) {
-            return response()->json(['message' => 'reretourExperience non trouvé'], 404);
+            return $this->customJsonResponse('Retour d\'experience non trouvé', null, 404);
         }
 
-        return response()->json($retourExperience);
+        return $this->customJsonResponse("Retour d'experience", $retourExperience, 200);
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
-{
-    $retourExperience = RetourExperience::findOrFail($id);
-    $retourExperience->update($request->all());
+    public function update(UpdateRetourExperienceRequest $request, $id) {
 
-    return response()->json($retourExperience);
-}
+        $retourExperience = RetourExperience::findOrFail($id);
+        $retourExperience->fill($request->validated());
+        if ($request->hasFile('image')) {
+            if (File::exists(public_path($retourExperience->image))) {
+                File::delete(public_path($retourExperience->image));
+            }
+            $retourExperience->image = $request->file('image')->store('public/photos');
+        }
+        $retourExperience->update();
+        return $this->customJsonResponse('Retour d\'experience mis à jour', $retourExperience, 200);
+    }
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RetourExperience $retourExperience)
+    public function destroy($id)
     {
-        // Supprimer un retour d'expérience
+        $retourExperience = RetourExperience::findOrFail($id);
         $retourExperience->delete();
-        return response()->json(['message' => 'Retour d\'expérience supprimé']);
-    }
-
-    public function restore($id){
-        // Restaurer un retour d'expérience
-        $retourExperience = RetourExperience::withTrashed()->find($id);
-        if (!$retourExperience) {
-            return response()->json(['message' => 'Retour d\'expérience non trouvé'], 404);
-        }
-
-        $retourExperience->restore();
-        return response()->json($retourExperience);
+        return $this->customJsonResponse('Retour d\'experience supprimé', $retourExperience, 200);
     }
 }
