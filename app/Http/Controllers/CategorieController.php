@@ -13,7 +13,12 @@ class CategorieController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Categorie::all();
+        return response()->json([
+            'status'=>true,
+            'message'=>'catégorie recuperer avec succés',
+            'data'=>$categories
+        ],200);
     }
 
     /**

@@ -15,7 +15,11 @@ class DiscussionController extends Controller
     public function index()
     {
         $discussions=Discussion::all();
-        return response()->json($discussions);
+        return response()->json([
+            "status"=>true,
+            'message'=>'Discussion affiche avec succés',
+            "data"=>$discussions
+        ],200);
         //
     }
 
@@ -41,7 +45,11 @@ class DiscussionController extends Controller
             "contenu"=> $validated["contenu"],
             "user_id"=> Auth::id(),
         ]);
-        return response()->json($discussion,201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Commentaire ajouté avec succès',
+            'data' =>  $discussion
+        ], 201);
         //
     }
 
@@ -74,7 +82,11 @@ class DiscussionController extends Controller
 
       ]);
       $discussion->update($validated) ;
-      return response()->json($discussion,200);
+      return response()->json([
+        'status' => true,
+        'message' => 'Commentaire mis à jour avec succès',
+        'data' =>  $discussion
+    ], 200);
     }
 
     /**
