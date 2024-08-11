@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\AdminController;
@@ -11,10 +10,14 @@ use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\RetourExperienceController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
@@ -52,11 +55,11 @@ Route::middleware(["auth"])->group(function () {
 
 
 
-Route::apiResource('reservations', ReservationController::class);
 
 Route::apiResource('discussions', DiscussionController::class)->except('update');
 Route::post('discussions/{id}', [DiscussionController::class, 'update']);
 
+// Route::apiResource('reservations', ReservationController::class);
 // Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 // Route::get('discussions/search', [DiscussionController::class, 'recherche'])->name('discussions.search');
 
@@ -65,4 +68,36 @@ Route::prefix('discussions/{discussion}')->group(function () {
     Route::post('commentaire', [CommentaireController::class, 'store']);
     Route::post('commentaire/{id}', [commentaireController::class, 'update']);
     Route::delete('commentaire/{id}', [CommentaireController::class, 'destroy']);
+});
+
+
+Route::apiResource('retour-experience', RetourExperienceController::class)->only('index', 'show');
+
+Route::apiResource('evenements', EvenementController::class)->only('index', 'show');
+
+
+Route::middleware(["auth"])->group(function () {
+    Route::post('evenements', [EvenementController::class, 'store'])->middleware('permission:ajouter_evenement');
+    Route::post('evenements/{id}', [EvenementController::class, 'update'])->middleware('permission:modifier_evenement');
+    Route::delete('evenements/{id}', [EvenementController::class, 'destroy'])->middleware('permission:supprimer_evenement');
+    // réserver un evenement
+    Route::post('evenements/{id}/reservation', [ReservationController::class, 'reserver']);
+
+    // voir mes reservations
+    Route::get('mes-reservations', [ReservationController::class, 'mesReservations']);
+
+    // voir les reservations d'un evenement
+    Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_reservation');
+
+    // confirmer réservation (bientot ajout des permissions)
+    Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation']);
+
+    // refuser une reservation (bientot ajout des permissions)
+    Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation']);
+});
+
+Route::middleware(["auth"])->group(function () {
+   Route::post('retour-experience', [RetourExperienceController::class, 'store'])->middleware('permission:ajouter_retour_experience'); 
+   Route::post('retour-experience/{id}', [RetourExperienceController::class, 'update'])->middleware('permission:modifier_retour_experience');
+   Route::delete('retour-experience/{id}', [RetourExperienceController::class, 'destroy'])->middleware('permission:supprimer_retour_experience');
 });
