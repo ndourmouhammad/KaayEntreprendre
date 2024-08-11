@@ -18,5 +18,5 @@ Route::post('/ressources', [RessourceController::class, 'store']);
 //Route pour detail, modifier et supprimer une ressource
 
 Route::get('/ressources/{id}', [RessourceController::class, 'show']);
-Route::put('/ressources/{id}', [RessourceController::class, 'update']);
+Route::post('/ressources/{id}', [RessourceController::class, 'update']);
 Route::delete('/ressources/{id}', [RessourceController::class, 'destroy']);

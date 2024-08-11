@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRessourceRequest;
 use App\Http\Requests\UpdateRessourceRequest;
 use App\Models\Ressource;
+use Illuminate\Http\Request;
+
 
 class RessourceController extends Controller
 {
@@ -13,81 +15,69 @@ class RessourceController extends Controller
      */
     public function index()
     {
-       return Ressource::all();
-
-
+       $ressource = Ressource::all();
+       return response($ressource,200);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRessourceRequest $request)
+    public function store(Request $request)
     {
-        $request->validate([
-
-            'titre' =>'required|string|max:255',
-            'contenu' => 'required|varchar|max:255',
-            'description'=> 'required|text',
-            'image' =>'required|string|',
-            'categorie_id'=>'required',
-            'user_id' => 'required'
-        ]);
-       return Ressource::create($request->all());
+        // Add the user_id of the currently authenticated user to the request data
+        $request['user_id'] = 1; // TODO: Replace with authenticated user id;
+    
+        // Create the resource using the request data
+        $ressource = Ressource::create($request->all());
+    
+        // Return a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Ressource created successfully',
+            'data' => $ressource
+        ], 201); // 201 status code for resource creation
     }
+    
 
     /**
      * Display the specified resource.
      */
-    public function show(Ressource $ressource)
+    public function show($id)
     {
-
-
+        $ressource = Ressource::find($id);
         if (!$ressource) {
-
             return response()->json(['message'=>'ressource non trouvée'],404);
         }
-
-        return $ressource;
+        return response()->json($ressource,200);
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRessourceRequest $request, Ressource $ressource)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-
-            'titre' =>'required|string|max:255',
-            'contenu' => 'required|varchar|max:255',
-            'description'=> 'required|text',
-            'image' =>'required|string|',
-            'categorie_id'=>'required',
-            'user_id' => 'required'
-        ]);
-
-        $ressource->update($request->all());
-
+        $ressource = Ressource::find($id);
         if (!$ressource) {
-            return response()->json(['message'=>'ressource non trouvée'],404);
+            return response()->json(['message'=> 'ressource non trouvée'],404);
         }
-
+        $ressource->update($request->all());
         return response()->json($ressource,200);
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ressource $ressource)
+    public function destroy($id)
     {
 
-        $ressource->delete();
-
+        $ressource = Ressource::find($id);
         if (!$ressource) {
             return response()->json(['message'=> 'ressource non trouvée'],404);
         }
-
-        return $ressource;
+        $ressource->delete();
+        return response()->json($ressource,200);
     }
 }
