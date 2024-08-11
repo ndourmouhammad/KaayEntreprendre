@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function guides()
+    {
+        return $this->hasMany(Guide::class);
+    }
 }

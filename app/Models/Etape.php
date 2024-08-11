@@ -11,8 +11,8 @@ class Etape extends Model
 
     protected $guarded = [];
 
-    public function guide()
+   public function guides()
     {
-        return $this->belongsTo(Guide::class);
+        return $this->hasMany(Guide::class);
     }
 }
