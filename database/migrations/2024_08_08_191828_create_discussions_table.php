@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('libelle');
             $table->text('contenu');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
@@ -24,6 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('discussions');
     }
 };

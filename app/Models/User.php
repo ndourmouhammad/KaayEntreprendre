@@ -68,6 +68,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Reservation::class);
     }
 
+    public function discussions()
+    {
+        return $this->hasMany(Discussion::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
