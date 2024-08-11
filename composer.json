@@ -9,12 +9,9 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
-
         "php-open-source-saver/jwt-auth": "^2.7",
+        "shayanys/lara-reserve": "^2.0",
         "spatie/laravel-permission": "^6.9"
-
-        "shayanys/lara-reserve": "^2.0"
-
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

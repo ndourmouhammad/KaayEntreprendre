@@ -15,4 +15,7 @@ class Discussion extends Model
     {
         return $this->hasMany(Commentaire::class);
     }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

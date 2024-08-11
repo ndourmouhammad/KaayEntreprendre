@@ -4,9 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-
-    "content-hash": "f15b456a57d5c9f85056e732dd94eb23",
-
+    "content-hash": "53972a801c8929afd40122d4bc1d9f82",
     "packages": [
         {
             "name": "brick/math",
@@ -3407,7 +3405,57 @@
             "time": "2024-04-27T21:32:50+00:00"
         },
         {
-
+            "name": "shayanys/lara-reserve",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shayan-yousefi/lara-reserve.git",
+                "reference": "bc38db60de78d462218691fef3a6440538f5d0d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shayan-yousefi/lara-reserve/zipball/bc38db60de78d462218691fef3a6440538f5d0d5",
+                "reference": "bc38db60de78d462218691fef3a6440538f5d0d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0",
+                "phpunit/phpunit": "^10.1"
+            },
+            "type": "laravel-package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ShayanYS\\LaraReserve\\LaraReserveServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ShayanYS\\LaraReserve\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "shayan",
+                    "email": "shayan.yousefi100@yahoo.com"
+                }
+            ],
+            "description": "a package to do reservation",
+            "support": {
+                "issues": "https://github.com/shayan-yousefi/lara-reserve/issues",
+                "source": "https://github.com/shayan-yousefi/lara-reserve/tree/2.0.0"
+            },
+            "time": "2023-05-06T13:21:23+00:00"
+        },
+        {
             "name": "spatie/laravel-permission",
             "version": "6.9.0",
             "source": {
@@ -3442,47 +3490,15 @@
                 "laravel": {
                     "providers": [
                         "Spatie\\Permission\\PermissionServiceProvider"
-
-            "name": "shayanys/lara-reserve",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/shayan-yousefi/lara-reserve.git",
-                "reference": "bc38db60de78d462218691fef3a6440538f5d0d5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/shayan-yousefi/lara-reserve/zipball/bc38db60de78d462218691fef3a6440538f5d0d5",
-                "reference": "bc38db60de78d462218691fef3a6440538f5d0d5",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^8.0",
-                "phpunit/phpunit": "^10.1"
-            },
-            "type": "laravel-package",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "ShayanYS\\LaraReserve\\LaraReserveServiceProvider"
-
                     ]
                 }
             },
             "autoload": {
-
                 "files": [
                     "src/helpers.php"
                 ],
                 "psr-4": {
                     "Spatie\\Permission\\": "src"
-
-                "psr-4": {
-                    "ShayanYS\\LaraReserve\\": "src/"
-
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3491,7 +3507,6 @@
             ],
             "authors": [
                 {
-
                     "name": "Freek Van der Herten",
                     "email": "freek@spatie.be",
                     "homepage": "https://spatie.be",
@@ -3521,18 +3536,6 @@
                 }
             ],
             "time": "2024-06-22T23:04:52+00:00"
-
-                    "name": "shayan",
-                    "email": "shayan.yousefi100@yahoo.com"
-                }
-            ],
-            "description": "a package to do reservation",
-            "support": {
-                "issues": "https://github.com/shayan-yousefi/lara-reserve/issues",
-                "source": "https://github.com/shayan-yousefi/lara-reserve/tree/2.0.0"
-            },
-            "time": "2023-05-06T13:21:23+00:00"
-
         },
         {
             "name": "symfony/clock",

@@ -99,7 +99,6 @@ class ReservationController extends Controller
         }
 
         $reservation = Reservation::findOrFail($id);
-        $this->authorize('update', $reservation);
 
         $reservation->update($validatedData->validated());
 
@@ -116,7 +115,6 @@ class ReservationController extends Controller
     public function destroy($id)
     {
         $reservation = Reservation::findOrFail($id);
-        $this->authorize('delete', $reservation);
 
         $reservation->delete();
 

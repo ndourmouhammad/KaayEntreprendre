@@ -80,11 +80,12 @@ class CommentaireController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $discussionId,$id)
     {
+        $discussion = Discussion::findOrFail($discussionId);
         $commentaire=Commentaire::findOrFail($id);
-
-        if($commentaire->user_id != Auth::id()){
+        $commentaires = $discussion->commentaires()->findOrFail($id);
+        if($commentaires->user_id != Auth::id()){
             return response()->json(["error"=>"Unauthorized"],403);
         }
         $validator=Validator::make($request->all(), [
