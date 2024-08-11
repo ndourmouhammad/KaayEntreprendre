@@ -92,4 +92,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    
+    public function guides()
+    {
+        return $this->hasMany(Guide::class);
+    }
 }

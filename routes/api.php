@@ -13,11 +13,9 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\GuideController;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 
 // Authentification
@@ -88,13 +86,13 @@ Route::middleware(["auth"])->group(function () {
     Route::get('mes-reservations', [ReservationController::class, 'mesReservations']);
 
     // voir les reservations d'un evenement
-    Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_reservation');
+    Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_reservations');
 
     // confirmer réservation (bientot ajout des permissions)
-    Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation']);
+    Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation'])->middleware('permission:confirmer_reservation');
 
     // refuser une reservation (bientot ajout des permissions)
-    Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation']);
+    Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation'])->middleware('permission:refuser_reservation');
 });
 
 Route::middleware(["auth"])->group(function () {
@@ -116,3 +114,17 @@ Route::middleware('auth')->group(function () {
 });
 
 
+
+//Route pour afficher tout les Guides
+Route::get('/guides', [GuideController::class, 'index']);
+//Route pour Show,Update et delete
+Route::get('/guides/{id}', [GuideController::class, 'show']);
+
+
+
+
+Route::middleware("auth")->group(function () {
+    Route::post('/guides', [GuideController::class, 'store'])->middleware('permission:ajouter_guide');
+    Route::post('/guides/{id}', [GuideController::class, 'update'])->middleware('permission:modifier_guide');
+    Route::delete('/guides/{id}', [GuideController::class, 'destroy'])->middleware('permission:supprimer_guide');
+});

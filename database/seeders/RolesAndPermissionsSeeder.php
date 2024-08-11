@@ -44,6 +44,9 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'ajouter_guide']);
         Permission::create(['name' => 'modifier_guide']);
         Permission::create(['name' => 'supprimer_guide']);
+        Permission::create(['name' => 'lister_resersations']);
+        Permission::create(['name' => 'confirmer_reservation']);
+        Permission::create(['name' => 'refuser_reservation']);
 
         // Créer des permissions pour coach
         Permission::create(['name' => 'ajouter_ressource']);
@@ -78,6 +81,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'ajouter_permission',
             'supprimer_permission',
             'modifier_permission',
+            'lister_resersations',
+            'confirmer_reservation',
+            'refuser_reservation',
             
         ]);
 
