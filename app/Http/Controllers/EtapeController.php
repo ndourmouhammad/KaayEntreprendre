@@ -13,7 +13,12 @@ class EtapeController extends Controller
      */
     public function index()
     {
-        //
+        $Etapes = Etape::all();
+       return response()->json([
+           'atatus'=>true,
+           'message'=>'Etape récupérés avec succés',
+           'data'=>$Etapes
+       ],200);
     }
 
     /**
