@@ -21,6 +21,7 @@ return new class extends Migration
             $table->datetime('date_fin');
             $table->integer('prix');
             $table->string('image');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
