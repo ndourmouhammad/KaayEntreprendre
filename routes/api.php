@@ -1,4 +1,5 @@
 
+
 <?php
 
 use App\Http\Controllers\AdminController;
@@ -11,10 +12,14 @@ use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\RetourExperienceController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
@@ -62,3 +67,8 @@ Route::prefix('discussions/{discussion}')->group(function () {
     Route::put('commentaire/{id}', [commentaireController::class, 'update']);
     Route::delete('commentaire/{id}', [CommentaireController::class, 'destroy']);
 });
+
+
+Route::apiResource('retour-experience', RetourExperienceController::class);
+Route::apiResource('evenement', EvenementController::class);
+

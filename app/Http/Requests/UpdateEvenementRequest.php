@@ -7,22 +7,27 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateEvenementRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Détermine si l'utilisateur est autorisé à faire cette requête.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Règles de validation qui s'appliquent à la requête.
      */
     public function rules(): array
     {
         return [
-            //
+            'theme' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string',
+            'lieu' => 'sometimes|required|string|max:255',
+            'nombre_places' => 'sometimes|required|integer|min:1',
+            'date_debut' => 'sometimes|required|date|before_or_equal:date_fin',
+            'date_fin' => 'sometimes|required|date|after_or_equal:date_debut',
+            'prix' => 'sometimes|required|integer|min:0',
+            'image' => 'sometimes|required|string|max:255',
         ];
     }
 }
