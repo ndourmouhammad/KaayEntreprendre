@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ReservationSeeder::class,
             RetourExperienceSeeder::class,
             SecteurActiviteSeeder::class, //
+            RolesAndPermissionsSeeder::class
         ]);
     }
 
