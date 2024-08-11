@@ -100,11 +100,11 @@ class CommentaireController extends Controller
             ], 422);
         }
 
-        $commentaire->update($request->only("contenu"));
+        $commentaires->update($request->only("contenu"));
         return response()->json([
             'status' => true,
             'message' => 'Commentaire mis à jour avec succès',
-            'data' => $commentaire
+            'data' => $commentaires
         ], 200);
 
     }
