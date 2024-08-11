@@ -50,9 +50,9 @@ class CommentaireController extends Controller
             ], 422);
         }
         $commentaires=Commentaire::create([
-            'discussion_id'=>$discussionId,
-            'user_id'=> Auth::id(),
-            'contenu'=> $request->contenu,
+            "discussion_id"=>$discussionId,
+            "contenu"=> $request->contenu,
+            "user_id"=> Auth::id(),
         ]);
         return response()->json([
             'status' => true,
@@ -90,7 +90,7 @@ class CommentaireController extends Controller
             return response()->json(["error"=>"Unauthorized"],403);
         }
         $validator=Validator::make($request->all(), [
-            "contenu"=> "required|string",
+            "contenu"=> "sometimes|string",
         ]);
         if ($validator->fails()) {
             return response()->json([
