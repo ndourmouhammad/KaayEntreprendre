@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
 use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class NotificationController extends Controller
 {
@@ -13,7 +16,15 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
+        
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $notifications = $user->notifications;
+        return response()->json($notifications);
+    
     }
 
     /**
