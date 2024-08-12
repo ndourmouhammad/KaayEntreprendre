@@ -1,9 +1,9 @@
 <?php
 
+
 use App\Http\Controllers\RessourceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
@@ -14,6 +14,8 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\RetourExperienceController;
 use App\Http\Controllers\GuideController;
+use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\EtapeController;
 
 
 
@@ -128,3 +130,10 @@ Route::middleware("auth")->group(function () {
     Route::post('/guides/{id}', [GuideController::class, 'update'])->middleware('permission:modifier_guide');
     Route::delete('/guides/{id}', [GuideController::class, 'destroy'])->middleware('permission:supprimer_guide');
 });
+
+
+
+Route::get('categories', [CategorieController::class,'index'])->name('categorie');
+
+Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
+Route::post('/etapes', [EtapeController::class, 'store']);

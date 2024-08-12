@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Etape;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreEtapeRequest;
 use App\Http\Requests\UpdateEtapeRequest;
-use App\Models\Etape;
 
 class EtapeController extends Controller
 {
@@ -13,7 +14,12 @@ class EtapeController extends Controller
      */
     public function index()
     {
-        //
+        $Etapes = Etape::all();
+       return response()->json([
+           'atatus'=>true,
+           'message'=>'Etape récupérés avec succés',
+           'data'=>$Etapes
+       ],200);
     }
 
     /**
@@ -27,10 +33,27 @@ class EtapeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEtapeRequest $request)
+    public function store(Request $request)
     {
-        //
+        // Create a new Etape instance
+        $etape = new Etape();
+    
+        // Fill the Etape model with all the request data
+        $etape->fill($request->all());
+    
+        // Handle file upload if present
+        if ($request->hasFile('pieces_jointes')) {
+            $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
+        }
+    
+        // Save the resource to the database
+        $etape->save();
+    
+        // Return a custom JSON response
+        return $this->customJsonResponse("Ressource ajoutée avec succès", $etape, 201);
     }
+    
+    
 
     /**
      * Display the specified resource.
