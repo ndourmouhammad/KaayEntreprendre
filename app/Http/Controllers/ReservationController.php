@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Reservation;
+use App\Notifications\ReservationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller as BaseController;
@@ -39,8 +41,17 @@ class ReservationController extends BaseController
       $validated['user_id']=auth::id();
       
       $reservation= Reservation::create($validated);
-      return response()->json([$reservation,201]);
-    }
+        // Envoyez une notification à l'utilisateur
+        Notification::route('mail', $reservation->user->email)
+            ->notify(new ReservationNotification($reservation, 'confirmed'));
+
+      // Envoyez une notification à l'administrateur
+      Notification::route('mail', 'Kaayentreprendre4@gmail.com')
+      ->notify(new ReservationNotification($reservation, 'confirmed'));
+
+  return response()->json(['message' => 'Reservation created successfully'], 201);
+}
+    
 
     /**
      * Display the specified resource.
@@ -86,5 +97,21 @@ class ReservationController extends BaseController
         $this->authorize('delete',$reservation);
         $reservation->delete();
         return response()->json([],204);
+    }
+    public function updateStatus(Request $request,$id){
+        $request->validate([
+            'status'=> 'required|string|in:accepte,refuse',
+        ]);
+        $reservation= Reservation::findOrFail($id);
+        $reservation->status = $request->input('status');
+        $reservation->save();
+           // Envoyez une notification à l'utilisateur
+        Notification::route('mail', $reservation->user->email)
+            ->notify(new ReservationNotification($reservation, $reservation->status));
+            // Envoyez une notification à l'administrateur
+            Notification::route('mail', 'Kaayentreprendre4@gmail.com')
+            ->notify(new ReservationNotification($reservation, $reservation->status));
+
+        return response()->json(['message' => 'Reservation status updated successfully']);
     }
 }
