@@ -115,8 +115,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
     //Routes Softdelete
     Route::get("guides/archives", [GuideController::class, "trashed"])->middleware("auth");
-    Route::delete('guides/{id}/force-delete', [GuideController::class, "forceDelete"])->middleware("auth");
-    Route::post('guides/{id}/restore', [GuideController::class, "restore"])->middleware("auth");
+    Route::delete("guides/{id}/force-delete", [GuideController::class, "forceDelete"])->middleware("auth");
+    Route::post("guides/{id}/restore", [GuideController::class, "restore"])->middleware("auth");
 });
 
 
