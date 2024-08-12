@@ -97,7 +97,7 @@ Route::middleware(["auth"])->group(function () {
     Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation'])->middleware('permission:refuser_reservation');
 
     // Route pour afficher la liste des événements supprimés (soft deleted)
-    Route::get('evenements/trashed', [EvenementController::class, 'trashed'])->name('evenements.trashed');
+    Route::get('trashed-evenements', [EvenementController::class, 'trash'])->name('evenements.trashed');
 
     // Route pour restaurer un événement supprimé (soft deleted)
     Route::patch('evenements/{id}/restore', [EvenementController::class, 'restore'])->name('evenements.restore');
@@ -112,13 +112,13 @@ Route::middleware(["auth"])->group(function () {
    Route::post('retour-experience/{id}', [RetourExperienceController::class, 'update'])->middleware('permission:modifier_retour_experience');
    Route::delete('retour-experience/{id}', [RetourExperienceController::class, 'destroy'])->middleware('permission:supprimer_retour_experience');
 
-    // Route pour afficher la liste des événements supprimés (soft deleted)
+    // Route pour afficher la liste des retours experiences supprimés (soft deleted)
     Route::get('retour_experiences/trashed', [RetourExperienceController::class, 'trash'])->name('retour_experiences.trash');
 
-    // Route pour restaurer un événement supprimé (soft deleted)
+    // Route pour restaurer un retour d'experience supprimé (soft deleted)
     Route::patch('retour_experiences/{id}/restore', [RetourExperienceController::class, 'restore'])->name('retour_experiences.restore');
 
-    // Route pour supprimer définitivement un événement (force delete)
+    // Route pour supprimer définitivement un retour d'experience (force delete)
     Route::delete('retour_experiences/{id}/force-delete', [RetourExperienceController::class, 'forceDelete'])->name('retour_experiences.force-delete');
 
 });

@@ -91,23 +91,17 @@ class EvenementController extends Controller
      */
     public function forceDelete($id)
     {
-        $evenement = Evenement::withTrashed()->findOrFail($id);
-        if ($evenement->trashed()) {
-            if (File::exists(public_path($evenement->image))) {
-                File::delete(public_path($evenement->image));
-            }
-            $evenement->forceDelete();
-            return $this->customJsonResponse("Evenement supprimé définitivement avec succès", null, 204);
-        }
-
-        return response()->json(['message' => 'Cet evenement n\'est pas supprimé'], 400);
+        $evenement = Evenement::onlyTrashed()->findOrFail($id);
+        $evenement->forceDelete();
+        return $this->customJsonResponse("Evenement supprimé definitivement", $evenement, 200);
     }
     /**
      * Display a listing of the trashed resources.
      */
-    public function trashed()
+    // Afficher la liste des evenements supprimés
+    public function trash()
     {
-        $evenements = Evenement::onlyTrashed()->get();
-        return $this->customJsonResponse("Liste des evenements supprimés", $evenements, 200);
+        $trashed = Evenement::onlyTrashed()->get();
+        return $this->customJsonResponse("Liste des evenements supprimés", $trashed, 200);
     }
 }
