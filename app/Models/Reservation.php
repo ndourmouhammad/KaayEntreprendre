@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\ReservationCreated;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Reservation extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
 
@@ -21,4 +21,15 @@ class Reservation extends Model
     {
         return $this->belongsTo(Evenement::class);
     }
+
+    // protected static function booted()
+    // {
+    //     static::updated(function ($reservation) {
+    //         if ($reservation->isDirty('status')) {
+    //             $reservation->user->notify(new ReservationCreated($reservation, $reservation->status));
+    //         }
+    //     });
+    // }
+
+    
 }
