@@ -23,6 +23,8 @@ class RessourceFactory extends Factory
             'image' => $this->faker->imageUrl(640, 480, 'nature', true, 'Faker'),
             'categorie_id' => Categorie::factory(),
             'user_id' => User::factory(),
+            
+
         ];
     }
 }

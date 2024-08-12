@@ -134,6 +134,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/ressources/{id}', [RessourceController::class, 'update'])->middleware('permission:modifier_ressource');
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
     
+    // Routes pour Sofdelete Ressource
+    Route::get('trashed-ressources', [RessourceController::class, "trashed"]);
+    Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware("auth");
+    Route::post('ressources/{id}/restore', [RessourceController::class, "restore"])->middleware("auth");
+
 });
 
 
