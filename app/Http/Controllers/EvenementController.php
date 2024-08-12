@@ -19,7 +19,9 @@ class EvenementController extends Controller
     }
 
 
-    
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(StoreEvenementRequest $request)
     {
         $evenement = new Evenement();
@@ -29,12 +31,13 @@ class EvenementController extends Controller
         }
         $evenement->save();
         return $this->customJsonResponse("Evenement ajouté avec succès", $evenement, 201);
-        
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show($id)
     {
-        //afficher un event
         $evenement = Evenement::find($id);
         if (!$evenement) {
             return response()->json(['message' => 'Evenement non trouvé'], 404);
@@ -42,11 +45,10 @@ class EvenementController extends Controller
         return $this->customJsonResponse("Evenement", $evenement, 200);
     }
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEvenementRequest $request ,$id)
+    public function update(UpdateEvenementRequest $request, $id)
     {
         $evenement = Evenement::findOrfail($id);
         $evenement->fill($request->validated());
@@ -60,14 +62,52 @@ class EvenementController extends Controller
         return $this->customJsonResponse("Evenement mis à jour avec succès", $evenement, 200);
     }
 
- 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (soft delete).
      */
     public function destroy($id)
     {
        $evenement = Evenement::findOrfail($id);
        $evenement->delete();
-       return $this->customJsonResponse("Etudiant supprimé avec succès", $evenement, 200);
+       return $this->customJsonResponse("Evenement supprimé avec succès", $evenement, 200);
+    }
+
+    /**
+     * Restore a trashed resource.
+     */
+    public function restore($id)
+    {
+        $evenement = Evenement::withTrashed()->findOrFail($id);
+        if ($evenement->trashed()) {
+            $evenement->restore();
+            return $this->customJsonResponse("Evenement restauré avec succès", $evenement, 200);
+        }
+
+        return response()->json(['message' => 'Cet evenement n\'est pas supprimé'], 400);
+    }
+
+    /**
+     * Permanently delete a resource (force delete).
+     */
+    public function forceDelete($id)
+    {
+        $evenement = Evenement::withTrashed()->findOrFail($id);
+        if ($evenement->trashed()) {
+            if (File::exists(public_path($evenement->image))) {
+                File::delete(public_path($evenement->image));
+            }
+            $evenement->forceDelete();
+            return $this->customJsonResponse("Evenement supprimé définitivement avec succès", null, 204);
+        }
+
+        return response()->json(['message' => 'Cet evenement n\'est pas supprimé'], 400);
+    }
+    /**
+     * Display a listing of the trashed resources.
+     */
+    public function trashed()
+    {
+        $evenements = Evenement::onlyTrashed()->get();
+        return $this->customJsonResponse("Liste des evenements supprimés", $evenements, 200);
     }
 }
