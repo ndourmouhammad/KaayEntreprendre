@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Etape;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,6 +17,10 @@ class GuideFactory extends Factory
         return [
             'titre' => $this->faker->sentence,
             'contenu' => $this->faker->paragraphs(3, true),
+            'user_id' => $this->faker->numberBetween(1, 10),
+            'etape_id' => Etape::factory(),
+
+
         ];
     }
 }
