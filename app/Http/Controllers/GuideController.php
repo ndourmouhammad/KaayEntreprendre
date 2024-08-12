@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreGuideRequest;
 use App\Http\Requests\UpdateGuideRequest;
+use App\Models\Ressource;
 
 class GuideController extends Controller
 {
@@ -54,7 +55,7 @@ class GuideController extends Controller
 
             return response()->json(['message'=>'guide non trouvé'],404);
         }
-        
+
         return $this->customJsonResponse("guide", $guide, 200);
     }
 
@@ -97,5 +98,22 @@ class GuideController extends Controller
         }
 
         return $this->customJsonResponse("guide supprimé avec succès", $guide, 200);
+    }
+    public function restore($id)
+    {
+        $guide = Guide::onlyTrashed()->where('id', $id)->first();
+        $guide->restore();
+        return $this->customJsonResponse("Guide restauré avec succès", $guide);
+    }
+    public function forceDelete($id)
+    {
+        $guide = Guide::onlyTrashed()->where('id', $id)->first();
+        $guide->forceDelete();
+        return $this->customJsonResponse("Guide supprimé définitivement", null, 200);
+    }
+    public function trashed()
+    {
+        $guides = Guide::onlyTrashed()->get();
+        return $this->customJsonResponse("Guides archivés", $guides);
     }
 }
