@@ -113,10 +113,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ressources', [RessourceController::class, 'store'])->middleware('permission:ajouter_ressource');
     Route::post('/ressources/{id}', [RessourceController::class, 'update'])->middleware('permission:modifier_ressource');
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
-    //Routes Softdelete
-    Route::get("guides/archives", [GuideController::class, "trashed"])->middleware("auth");
-    Route::delete("guides/{id}/force-delete", [GuideController::class, "forceDelete"])->middleware("auth");
-    Route::post("guides/{id}/restore", [GuideController::class, "restore"])->middleware("auth");
+    
 });
 
 
@@ -133,6 +130,11 @@ Route::middleware("auth")->group(function () {
     Route::post('/guides', [GuideController::class, 'store'])->middleware('permission:ajouter_guide');
     Route::post('/guides/{id}', [GuideController::class, 'update'])->middleware('permission:modifier_guide');
     Route::delete('/guides/{id}', [GuideController::class, 'destroy'])->middleware('permission:supprimer_guide');
+
+    // Routes pour afficher les guides supprimés
+    Route::get('/trashed-guides', [GuideController::class, 'trashed']);
+    Route::post('/restore-guides/{id}', [GuideController::class, 'restore']);
+    Route::post('/force-delete-guides/{id}', [GuideController::class, 'forceDelete']);
 });
 
 
