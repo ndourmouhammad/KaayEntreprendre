@@ -53,7 +53,7 @@ class RessourceController extends Controller
     return $this->customJsonResponse("Ressource ajoutée avec succès", $ressource, 201);
 }
 
-    
+
 
     /**
      * Display the specified resource.
@@ -73,7 +73,7 @@ class RessourceController extends Controller
      */
     public function update(UpdateRessourceRequest $request, $id)
     {
-        
+
         $ressource = Ressource::findOrfail($id);
         $ressource->fill($request->validated());
         if ($request->hasFile('image')) {
@@ -90,7 +90,7 @@ class RessourceController extends Controller
         }
         $ressource->update();
         return $this->customJsonResponse("Ressource mis à jour avec succès", $ressource, 200);
-        
+
     }
 
     /**
@@ -105,5 +105,23 @@ class RessourceController extends Controller
         }
         $ressource->delete();
         return response()->json($ressource,200);
+    }
+
+    public function restore($id)
+    {
+        $ressource = Ressource::onlyTrashed()->where('id', $id)->first();
+        $ressource->restore();
+        return $this->customJsonResponse("ressource restauré avec succès", $ressource);
+    }
+    public function forceDelete($id)
+    {
+        $ressource = Ressource::onlyTrashed()->where('id', $id)->first();
+        $ressource->forceDelete();
+        return $this->customJsonResponse("ressource supprimé définitivement", null, 200);
+    }
+    public function trashed()
+    {
+        $ressources = Ressource::onlyTrashed()->get();
+        return $this->customJsonResponse("ressources archivés", $ressources);
     }
 }

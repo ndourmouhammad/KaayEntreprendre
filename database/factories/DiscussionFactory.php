@@ -16,6 +16,9 @@ class DiscussionFactory extends Factory
         return [
             'libelle' => $this->faker->sentence,
             'contenu' => $this->faker->paragraphs(3, true),
+            'user_id' => $this->faker->numberBetween(1, 10),
+
+
         ];
     }
 }
