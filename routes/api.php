@@ -98,7 +98,7 @@ Route::middleware(["auth"])->group(function () {
 });
 
 Route::middleware(["auth"])->group(function () {
-   Route::post('retour-experience', [RetourExperienceController::class, 'store'])->middleware('permission:ajouter_retour_experience'); 
+   Route::post('retour-experience', [RetourExperienceController::class, 'store'])->middleware('permission:ajouter_retour_experience');
    Route::post('retour-experience/{id}', [RetourExperienceController::class, 'update'])->middleware('permission:modifier_retour_experience');
    Route::delete('retour-experience/{id}', [RetourExperienceController::class, 'destroy'])->middleware('permission:supprimer_retour_experience');
 });
@@ -112,7 +112,11 @@ Route::get('/ressources/{id}', [RessourceController::class, 'show']);
 Route::middleware('auth')->group(function () {
     Route::post('/ressources', [RessourceController::class, 'store'])->middleware('permission:ajouter_ressource');
     Route::post('/ressources/{id}', [RessourceController::class, 'update'])->middleware('permission:modifier_ressource');
-    Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource'); 
+    Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
+    // Routes pour Sofdelete Ressource
+    Route::get("ressources/archives", [RessourceController::class, "trashed"])->middleware("auth");
+    Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware("auth");
+    Route::post('ressources/{id}/restore', [RessourceController::class, "restore"])->middleware("auth");
 });
 
 
