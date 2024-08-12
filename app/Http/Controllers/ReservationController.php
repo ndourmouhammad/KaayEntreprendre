@@ -1,117 +1,124 @@
 <?php
-
 namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
-use App\Models\Notification;
+
 use App\Models\Reservation;
-use App\Notifications\ReservationNotification;
+use App\Notifications\ReservationCreated;
+use App\Notifications\ReservationAccepted;
+use App\Notifications\ReservationRejected;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Routing\Controller;
 
-class ReservationController extends BaseController
+class ReservationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // ...
+    public function reservationsEvenement($evenement_id)
     {
+        $reservations = Reservation::where('evenement_id', $evenement_id)->get();
+        return response()->json($reservations, 200);
+    }
+    public function mesReservations()
+    { 
         $reservations= Reservation::where('user_id', auth::id())->get();
-      return response()->json($reservations);
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store( Request $request)
-    {
-        $validated= $request->validate([
-            'evenement_id'=> 'required|exists:evenements,id',
-            'status'=> 'nullable|in:en_attente,accepte,refuse',
-        ]);
-      $validated['user_id']=auth::id();
       
-      $reservation= Reservation::create($validated);
-        // Envoyez une notification à l'utilisateur
-        Notification::route('mail', $reservation->user->email)
-            ->notify(new ReservationNotification($reservation, 'confirmed'));
-
-      // Envoyez une notification à l'administrateur
-      Notification::route('mail', 'Kaayentreprendre4@gmail.com')
-      ->notify(new ReservationNotification($reservation, 'confirmed'));
-
-  return response()->json(['message' => 'Reservation created successfully'], 201);
-}
-    
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        //
-        $reservation= Reservation::findOrFail($id);
-        $this->authorize('view', $reservation);
-        return response()->json($reservation);
+        return response()->json([
+            'status' => true,
+            'message' => "Réservations affichées avec succès",
+            "data" => $reservations
+        ], 200);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Reservation $reservation)
+    public function reserver(Request $request, $evenement_id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request,$id)
-    {
-        $reservation= Reservation::findOrFail($id);
-        $this->authorize('update', $reservation);
-        $validated=$request->validate([
-           'evenement_id'=> 'required|exists:evenements,id',
-            'status'=> 'nullable|in:en_attente,accepte,refuse', 
+        // Validate the request
+        $validatedData = Validator::make($request->all(), [
+            'status' => 'nullable|in:en_attente,accepte,refuse',
         ]);
-        $reservation->update();
-        return response()->json([$reservation,201]);
 
+        if ($validatedData->fails()) {
+            return response()->json([
+                "status" => false,
+                "message" => "Validation error",
+                "data" => $validatedData->errors()
+            ], 400);
+        }
+
+        // Retrieve validated status or set default
+        $validated = $validatedData->validated();
+        $validated['status'] = $validated['status'] ?? 'en_attente';
+
+        // Prepare data for creation
+        $data = [
+            'evenement_id' => $evenement_id,
+            'user_id' => auth::id(),
+            'status' => $validated['status'],
+        ];
+
+        // Create the reservation
+        $reservation = Reservation::create($data);
+
+        // Notify the user
+        Notification::send(Auth::user(), new ReservationCreated($reservation));
+
+        return response()->json([
+            "status" => true,
+            "message" => "Réservation ajoutée avec succès",
+            "data" => $reservation
+        ], 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    public function confirmerReservation($reservation_id)
     {
-        $reservation= Reservation::findOrFail($id);
-        $this->authorize('delete',$reservation);
-        $reservation->delete();
-        return response()->json([],204);
-    }
-    public function updateStatus(Request $request,$id){
-        $request->validate([
-            'status'=> 'required|string|in:accepte,refuse',
-        ]);
-        $reservation= Reservation::findOrFail($id);
-        $reservation->status = $request->input('status');
+        // Find the reservation by its ID
+        $reservation = Reservation::findOrFail($reservation_id);
+
+        // Check if the reservation status is 'en_attente'
+        if ($reservation->status !== 'en_attente') {
+            return response()->json([
+                "status" => false,
+                "message" => "La réservation ne peut être confirmée car elle n'est pas en attente."
+            ], 400);
+        }
+
+        // Update the status to 'accepte'
+        $reservation->status = 'accepte';
         $reservation->save();
-           // Envoyez une notification à l'utilisateur
-        Notification::route('mail', $reservation->user->email)
-            ->notify(new ReservationNotification($reservation, $reservation->status));
-            // Envoyez une notification à l'administrateur
-            Notification::route('mail', 'Kaayentreprendre4@gmail.com')
-            ->notify(new ReservationNotification($reservation, $reservation->status));
 
-        return response()->json(['message' => 'Reservation status updated successfully']);
+        // Notify the user
+        Notification::send(Auth::user(), new ReservationAccepted($reservation));
+
+        return response()->json([
+            "status" => true,
+            "message" => "Réservation confirmée avec succès.",
+            "data" => $reservation
+        ], 200);
+    }
+
+    public function refuserReservation($reservation_id)
+    {
+        // Find the reservation by its ID
+        $reservation = Reservation::findOrFail($reservation_id);
+
+        // Check if the reservation status is 'en_attente'
+        if ($reservation->status !== 'en_attente') {
+            return response()->json([
+                "status" => false,
+                "message" => "La réservation ne peut être refusée car elle n'est pas en attente."
+            ], 400);
+        }
+
+        // Update the status to 'refuse'
+        $reservation->status = 'refuse';
+        $reservation->save();
+
+        // Notify the user
+        Notification::send(Auth::user(), new ReservationRejected($reservation));
+
+        return response()->json([
+            "status" => true,
+            "message" => "Réservation refusée avec succès.",
+            "data" => $reservation
+        ], 200);
     }
 }
