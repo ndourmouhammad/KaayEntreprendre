@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 
-class ReservationNotification extends Mailable
+class ReservationRefuse extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -23,6 +23,6 @@ class ReservationNotification extends Mailable
         return $this->subject('Réservation')
                     ->from(config('mail.from.address'), config('mail.from.name'))
                     ->to($this->reservation->user->email)
-                    ->view('reservation_notification'); // Utilisation d'une vue Blade
+                    ->view('reservation_refuse'); // Utilisation d'une vue Blade
     }
 }

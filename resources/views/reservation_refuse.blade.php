@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Réservation en Cours de Traitement</title>
+    <title>Refus de Réservation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,7 +19,7 @@
             margin: 0 auto;
         }
         h1 {
-            color: #333333;
+            color: #ff0000; /* Rouge pour indiquer une annulation */
         }
         p {
             color: #555555;
@@ -35,11 +35,12 @@
 </head>
 <body>
     <div class="email-container">
-        <h1>Réservation en Cours de Traitement</h1>
+        <h1>Votre Réservation a été Refusée</h1>
         <p>Bonjour {{ $reservation->user->name }},</p>
-        <p>Nous vous informons que votre réservation pour l'événement <strong>"{{ $reservation->evenement->theme }}"</strong> a bien été prise en compte.</p>
-        <p>Votre réservation est actuellement en cours de traitement. Vous recevrez une notification dès que son statut évoluera.</p>
-        <p>Merci de votre patience et de votre confiance.</p>
+        <p>Nous regrettons de vous informer que votre réservation pour l'événement <strong>"{{ $reservation->evenement->theme }}"</strong> a été refusée.</p>
+        
+        <p>Nous nous excusons pour les éventuels désagréments et vous encourageons à essayer de nouveau ou à contacter notre service clientèle pour plus d'informations.</p>
+        <p>Merci de votre compréhension.</p>
         
         <div class="footer">
             <p>KAAYENTREPRENDRE &copy; 2024</p>
@@ -47,4 +48,3 @@
     </div>
 </body>
 </html>
-

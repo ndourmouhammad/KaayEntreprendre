@@ -2,10 +2,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
-use App\Notifications\ReservationCreated;
 use App\Mail\ReservationNotification;
+use App\Mail\ReservationConfirmed;
+use App\Mail\ReservationAccepted;
+use App\Mail\ReservationRefuse;
 use Illuminate\Support\Facades\Mail;
-use App\Notifications\ReservationAccepted;
 use App\Notifications\ReservationRejected;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +91,7 @@ class ReservationController extends Controller
         $reservation->save();
 
         // Notify the user
-        Notification::send(Auth::user(), new ReservationAccepted($reservation));
+        Mail::to($reservation->user->email)->send(new ReservationAccepted($reservation));
 
         return response()->json([
             "status" => true,
@@ -117,7 +118,7 @@ class ReservationController extends Controller
         $reservation->save();
 
         // Notify the user
-        Notification::send(Auth::user(), new ReservationRejected($reservation));
+        Mail::to($reservation->user->email)->send(new ReservationRefuse($reservation));
 
         return response()->json([
             "status" => true,
