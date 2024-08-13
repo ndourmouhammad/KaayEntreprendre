@@ -103,17 +103,6 @@ namespace App\Http\Controllers\Annotations ;
  * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 type="object",
- *                 properties={
- *                 },
- *             ),
- *         ),
- *     ),
  *     tags={"Retour d'expériences"},
 *),
 
@@ -184,17 +173,6 @@ namespace App\Http\Controllers\Annotations ;
  * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 type="object",
- *                 properties={
- *                 },
- *             ),
- *         ),
- *     ),
  *     tags={"Retour d'expériences"},
 *),
 
@@ -213,20 +191,6 @@ namespace App\Http\Controllers\Annotations ;
  * ),
  *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
  * ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="application/x-www-form-urlencoded",
- *             @OA\Schema(
- *                 type="object",
- *                 properties={
- *                     @OA\Property(property="libelle", type="string"),
- *                     @OA\Property(property="image", type="string", format="binary"),
- *                     @OA\Property(property="contenu", type="string"),
- *                 },
- *             ),
- *         ),
- *     ),
  *     tags={"Retour d'expériences"},
 *),
 
