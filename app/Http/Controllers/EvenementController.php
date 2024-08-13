@@ -26,8 +26,8 @@ class EvenementController extends Controller
     {
         $evenement = new Evenement();
         $evenement->fill($request->validated());
-        if ($request->hasFile('photo')) {
-            $evenement->photo = $request->file('photo')->store('public/photos');
+        if ($request->hasFile('image')) {
+            $evenement->image = $request->file('image')->store('public/photos');
         }
         $evenement->save();
         return $this->customJsonResponse("Evenement ajouté avec succès", $evenement, 201);

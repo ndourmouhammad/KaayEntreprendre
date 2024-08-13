@@ -36,6 +36,9 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'ajouter_evenement']);
         Permission::create(['name' => 'modifier_evenement']);
         Permission::create(['name' => 'supprimer_evenement']);
+        Permission::create(['name' => 'lister_evenements_supprimés']);
+        Permission::create(['name' => 'restaurer_evenement_supprimé']);
+        Permission::create(['name' => 'supprimer_evenement_supprimé']);
         Permission::create(['name' => 'supprimer_discussion']);
         Permission::create(['name' => 'supprimer_commentaire']);
         Permission::create(['name' => 'ajouter_retour_experience']);
@@ -47,11 +50,23 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'lister_resersations']);
         Permission::create(['name' => 'confirmer_reservation']);
         Permission::create(['name' => 'refuser_reservation']);
+        Permission::create(['name' => 'lister_retours_experiences_supprimés']);
+        Permission::create(['name' => 'restaurer_retour_experience_supprimé']);
+        Permission::create(['name' => 'supprimer_retour_experience_supprimé']);
+        Permission::create(['name' => 'lister_guides_supprimés']);
+        Permission::create(['name' => 'restaurer_guide_supprimé']);
+        Permission::create(['name' => 'supprimer_guide_supprimé']);
+        Permission::create(['name' => 'ajouter_etape']);
+        
 
         // Créer des permissions pour coach
         Permission::create(['name' => 'ajouter_ressource']);
         Permission::create(['name' => 'modifier_ressource']);
         Permission::create(['name' => 'supprimer_ressource']);
+        Permission::create(['name' => 'lister_ressources_supprimées']);
+        Permission::create(['name' => 'restaurer_ressource_supprimée']);
+        Permission::create(['name' => 'supprimer_ressource_supprimée']);
+        
         
         // Créer le rôle "admin" et leur assigner des permissions
         $adminRole = Role::create(['name' => 'admin']);
@@ -84,6 +99,17 @@ class RolesAndPermissionsSeeder extends Seeder
             'lister_resersations',
             'confirmer_reservation',
             'refuser_reservation',
+            'lister_evenements_supprimés',
+            'restaurer_evenement_supprimé',
+            'supprimer_evenement_supprimé',
+            'lister_retours_experiences_supprimés',
+            'restaurer_retour_experience_supprimé',
+            'supprimer_retour_experience_supprimé',
+            'lister_guides_supprimés',
+            'restaurer_guide_supprimé',
+            'supprimer_guide_supprimé',
+            'ajouter_etape',
+
             
         ]);
 
@@ -93,6 +119,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'ajouter_ressource',
             'modifier_ressource',
             'supprimer_ressource',
+            'lister_ressources_supprimées',
+            'restaurer_ressource_supprimée',
+            'supprimer_ressource_supprimée',
+            
         ]);
 
         // Créer le rôle "entrepreneur" et leur assigner des permissions

@@ -9,7 +9,6 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\RetourExperienceController;
@@ -17,17 +16,25 @@ use App\Http\Controllers\GuideController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\EtapeController;
 
-
-
+// public
+Route::apiResource('discussions', DiscussionController::class)->except('update', 'store','destroy');
+Route::apiResource('retour-experience', RetourExperienceController::class)->only('index', 'show');
+Route::apiResource('evenements', EvenementController::class)->only('index', 'show');
+Route::get('/ressources',[RessourceController::class, 'index']);
+Route::get('/ressources/{id}', [RessourceController::class, 'show']);
+Route::get('/guides', [GuideController::class, 'index']);
+Route::get('/guides/{id}', [GuideController::class, 'show']);
+Route::get('categories', [CategorieController::class,'index'])->name('categorie');
+Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->post('/refresh', [AuthController::class, 'refreshToken']);
 Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
-Route::post('/user/update', [AuthController::class, 'update'])->middleware('auth:api');
+Route::middleware('auth:api')->post('/update/{id}', [AuthController::class, 'update'])->middleware('auth:api');
 
-// Admin
+
 
 
 Route::middleware(["auth"])->group(function () {
@@ -50,32 +57,19 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/permissions/{id}', [PermissionController::class, 'update'])->middleware('permission:modifier_permission');
     Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->middleware('permission:supprimer_permission');
 
+    // Ajouter une discussion
+    Route::post('discussions/{id}', [DiscussionController::class, 'update']);
+    Route::post('discussions', [DiscussionController::class, 'store']);
+    Route::delete('discussions/{id}', [DiscussionController::class, 'destroy']);
 
+    // Commentaires
+    Route::prefix('discussions/{discussion}')->group(function () {
+        Route::get('commentaires', [CommentaireController::class, 'index']);
+        Route::post('commentaire', [CommentaireController::class, 'store']);
+        Route::post('commentaire/{id}', [commentaireController::class, 'update']);
+        Route::delete('commentaire/{id}', [CommentaireController::class, 'destroy']);
+    });
 });
-
-
-
-
-
-Route::apiResource('discussions', DiscussionController::class)->except('update');
-Route::post('discussions/{id}', [DiscussionController::class, 'update']);
-
-// Route::apiResource('reservations', ReservationController::class);
-// Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
-// Route::get('discussions/search', [DiscussionController::class, 'recherche'])->name('discussions.search');
-
-Route::prefix('discussions/{discussion}')->group(function () {
-    Route::get('commentaires', [CommentaireController::class, 'index']);
-    Route::post('commentaire', [CommentaireController::class, 'store']);
-    Route::post('commentaire/{id}', [commentaireController::class, 'update']);
-    Route::delete('commentaire/{id}', [CommentaireController::class, 'destroy']);
-});
-
-
-Route::apiResource('retour-experience', RetourExperienceController::class)->only('index', 'show');
-
-Route::apiResource('evenements', EvenementController::class)->only('index', 'show');
-
 
 Route::middleware(["auth"])->group(function () {
     Route::post('evenements', [EvenementController::class, 'store'])->middleware('permission:ajouter_evenement');
@@ -88,7 +82,7 @@ Route::middleware(["auth"])->group(function () {
     Route::get('mes-reservations', [ReservationController::class, 'mesReservations']);
 
     // voir les reservations d'un evenement
-    Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_reservations');
+    Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_resersations');
 
     // confirmer réservation (bientot ajout des permissions)
     Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation'])->middleware('permission:confirmer_reservation');
@@ -97,13 +91,13 @@ Route::middleware(["auth"])->group(function () {
     Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation'])->middleware('permission:refuser_reservation');
 
     // Route pour afficher la liste des événements supprimés (soft deleted)
-    Route::get('trashed-evenements', [EvenementController::class, 'trash'])->name('evenements.trashed');
+    Route::get('trashed-evenements', [EvenementController::class, 'trash'])->name('evenements.trashed')->middleware('permission:lister_evenements_supprimés');
 
     // Route pour restaurer un événement supprimé (soft deleted)
-    Route::patch('evenements/{id}/restore', [EvenementController::class, 'restore'])->name('evenements.restore');
+    Route::patch('evenements/{id}/restore', [EvenementController::class, 'restore'])->name('evenements.restore')->middleware('permission:restaurer_evenement_supprimé');
 
     // Route pour supprimer définitivement un événement (force delete)
-    Route::delete('evenements/{id}/force-delete', [EvenementController::class, 'forceDelete'])->name('evenements.force-delete');
+    Route::delete('evenements/{id}/force-delete', [EvenementController::class, 'forceDelete'])->name('evenements.force-delete')->middleware('permission:supprimer_evenement_supprimé');
 
 });
 
@@ -113,21 +107,17 @@ Route::middleware(["auth"])->group(function () {
    Route::delete('retour-experience/{id}', [RetourExperienceController::class, 'destroy'])->middleware('permission:supprimer_retour_experience');
 
     // Route pour afficher la liste des retours experiences supprimés (soft deleted)
-    Route::get('retour_experiences/trashed', [RetourExperienceController::class, 'trash'])->name('retour_experiences.trash');
+    Route::get('retour_experiences/trashed', [RetourExperienceController::class, 'trash'])->name('retour_experiences.trash')->middleware('permission:lister_retours_experiences_supprimés');
 
     // Route pour restaurer un retour d'experience supprimé (soft deleted)
-    Route::patch('retour_experiences/{id}/restore', [RetourExperienceController::class, 'restore'])->name('retour_experiences.restore');
+    Route::patch('retour_experiences/{id}/restore', [RetourExperienceController::class, 'restore'])->name('retour_experiences.restore')->middleware('permission:restaurer_retour_experience_supprimé');
 
     // Route pour supprimer définitivement un retour d'experience (force delete)
-    Route::delete('retour_experiences/{id}/force-delete', [RetourExperienceController::class, 'forceDelete'])->name('retour_experiences.force-delete');
+    Route::delete('retour_experiences/{id}/force-delete', [RetourExperienceController::class, 'forceDelete'])->name('retour_experiences.force-delete')->middleware('permission:supprimer_retour_experience_supprimé');
 
 });
 
 
-
-
-Route::get('/ressources',[RessourceController::class, 'index']);
-Route::get('/ressources/{id}', [RessourceController::class, 'show']);
 
 Route::middleware('auth')->group(function () {
     Route::post('/ressources', [RessourceController::class, 'store'])->middleware('permission:ajouter_ressource');
@@ -135,20 +125,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
     
     // Routes pour Sofdelete Ressource
-    Route::get('trashed-ressources', [RessourceController::class, "trashed"]);
-    Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware("auth");
-    Route::post('ressources/{id}/restore', [RessourceController::class, "restore"])->middleware("auth");
+    Route::get('trashed-ressources', [RessourceController::class, "trashed"])->middleware('permission:lister_ressources_supprimées');
+    Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware('permission:supprimer_ressource_supprimée');
+    Route::post('ressources/{id}/restore', [RessourceController::class, "restore"])->middleware('permission:restaurer_ressource_supprimée');
 
 });
-
-
-
-//Route pour afficher tout les Guides
-Route::get('/guides', [GuideController::class, 'index']);
-//Route pour Show,Update et delete
-Route::get('/guides/{id}', [GuideController::class, 'show']);
-
-
 
 
 Route::middleware("auth")->group(function () {
@@ -157,17 +138,15 @@ Route::middleware("auth")->group(function () {
     Route::delete('/guides/{id}', [GuideController::class, 'destroy'])->middleware('permission:supprimer_guide');
 
     // Routes pour afficher les guides supprimés
-    Route::get('/trashed-guides', [GuideController::class, 'trashed']);
-    Route::post('/restore-guides/{id}', [GuideController::class, 'restore']);
-    Route::post('/force-delete-guides/{id}', [GuideController::class, 'forceDelete']);
+    Route::get('/trashed-guides', [GuideController::class, 'trashed'])->middleware('permission:lister_guides_supprimés');
+    Route::post('/restore-guides/{id}', [GuideController::class, 'restore'])->middleware('permission:restaurer_guide_supprimé');
+    Route::post('/force-delete-guides/{id}', [GuideController::class, 'forceDelete'])->middleware('permission:supprimer_guide_supprimé');
+    Route::post('/etapes', [EtapeController::class, 'store'])->middleware('permission:ajouter_etape');
+
+// Demande Accompagnement
+Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
 });
 
 
 
-Route::get('categories', [CategorieController::class,'index'])->name('categorie');
 
-Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
-Route::post('/etapes', [EtapeController::class, 'store']);
-
-// Demande Accompagnement
-Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);

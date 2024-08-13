@@ -26,32 +26,39 @@ class RessourceController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreRessourceRequest $request)
-{
-    // Create a new instance of the Ressource model
-    $ressource = new Ressource();
-
-    // Fill the model with the validated data from the request
-    $ressource->fill($request->validated());
-
-    // Handle the image file upload
-    if ($request->hasFile('image')) {
-        $ressource->image = $request->file('image')->store('public/photos');
+    {
+        // Vérifier si l'utilisateur a un statut de 0
+        if (auth()->user()->statut === 0) {
+            // Retourner une réponse JSON avec un message d'erreur
+            return $this->customJsonResponse("Vous n'êtes pas autorisé à ajouter une ressource.", null, 403);
+        }
+    
+        // Créer une nouvelle instance du modèle Ressource
+        $ressource = new Ressource();
+    
+        // Remplir le modèle avec les données validées de la requête
+        $ressource->fill($request->validated());
+    
+        // Gérer le téléchargement du fichier d'image
+        if ($request->hasFile('image')) {
+            $ressource->image = $request->file('image')->store('public/photos');
+        }
+    
+        // Gérer le téléchargement du fichier contenu
+        if ($request->hasFile('contenu')) {
+            $ressource->contenu = $request->file('contenu')->store('public/contenu');
+        }
+    
+        // Assigner l'ID de l'utilisateur authentifié au champ user_id
+        $ressource->user_id = auth()->id();
+    
+        // Enregistrer la Ressource dans la base de données
+        $ressource->save();
+    
+        // Retourner une réponse JSON personnalisée
+        return $this->customJsonResponse("Ressource ajoutée avec succès", $ressource, 201);
     }
-
-    // Handle the contenu file upload
-    if ($request->hasFile('contenu')) {
-        $ressource->contenu = $request->file('contenu')->store('public/contenu');
-    }
-
-    // Assign the authenticated user's ID to the user_id field
-    $ressource->user_id = auth()->id();
-
-    // Save the Ressource to the database
-    $ressource->save();
-
-    // Return a custom JSON response
-    return $this->customJsonResponse("Ressource ajoutée avec succès", $ressource, 201);
-}
+    
 
 
 
@@ -73,55 +80,128 @@ class RessourceController extends Controller
      */
     public function update(UpdateRessourceRequest $request, $id)
     {
-
-        $ressource = Ressource::findOrfail($id);
+        // Vérifier si l'utilisateur a un statut de 0
+        if (auth()->user()->statut === 0) {
+            // Retourner une réponse JSON avec un message d'erreur
+            return $this->customJsonResponse("Vous n'êtes pas autorisé à mettre à jour une ressource.", null, 403);
+        }
+    
+        // Récupérer la ressource à mettre à jour
+        $ressource = Ressource::findOrFail($id);
+    
+        // Remplir le modèle avec les données validées de la requête
         $ressource->fill($request->validated());
+    
+        // Gérer la mise à jour du fichier image
         if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image si elle existe
             if (File::exists(public_path($ressource->image))) {
                 File::delete(public_path($ressource->image));
             }
+            // Enregistrer la nouvelle image
             $ressource->image = $request->file('image')->store('public/photos');
         }
+    
+        // Gérer la mise à jour du fichier contenu
         if ($request->hasFile('contenu')) {
+            // Supprimer l'ancien contenu si il existe
             if (File::exists(public_path($ressource->contenu))) {
                 File::delete(public_path($ressource->contenu));
             }
+            // Enregistrer le nouveau contenu
             $ressource->contenu = $request->file('contenu')->store('public/contenu');
         }
-        $ressource->update();
-        return $this->customJsonResponse("Ressource mis à jour avec succès", $ressource, 200);
-
+    
+        // Enregistrer les modifications dans la base de données
+        $ressource->save();
+    
+        // Retourner une réponse JSON personnalisée
+        return $this->customJsonResponse("Ressource mise à jour avec succès", $ressource, 200);
     }
+    
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-    {
+{
+    // Récupérer la ressource à supprimer
+    $ressource = Ressource::find($id);
 
-        $ressource = Ressource::find($id);
-        if (!$ressource) {
-            return response()->json(['message'=> 'ressource non trouvée'],404);
-        }
-        $ressource->delete();
-        return response()->json($ressource,200);
+    // Vérifier si la ressource existe
+    if (!$ressource) {
+        return response()->json(['message' => 'Ressource non trouvée'], 404);
     }
 
-    public function restore($id)
-    {
-        $ressource = Ressource::onlyTrashed()->where('id', $id)->first();
-        $ressource->restore();
-        return $this->customJsonResponse("ressource restauré avec succès", $ressource);
+    // Vérifier si l'utilisateur a le droit de supprimer cette ressource
+    if ($ressource->user_id !== auth()->id()) {
+        return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer cette ressource'], 403);
     }
-    public function forceDelete($id)
-    {
-        $ressource = Ressource::onlyTrashed()->where('id', $id)->first();
-        $ressource->forceDelete();
-        return $this->customJsonResponse("ressource supprimé définitivement", null, 200);
+
+    // Supprimer la ressource
+    $ressource->delete();
+
+    // Retourner une réponse JSON confirmant la suppression
+    return response()->json(['message' => 'Ressource supprimée avec succès'], 200);
+}
+
+public function restore($id)
+{
+    // Vérifier le statut de l'utilisateur
+    if (auth()->user()->statut == 0) {
+        return response()->json(['message' => 'Vous n\'êtes pas autorisé à restaurer des ressources'], 403);
     }
-    public function trashed()
-    {
-        $ressources = Ressource::onlyTrashed()->get();
-        return $this->customJsonResponse("ressources archivés", $ressources);
+
+    // Récupérer la ressource supprimée qui correspond à l'utilisateur
+    $ressource = Ressource::onlyTrashed()->where('id', $id)->where('user_id', auth()->id())->first();
+
+    // Vérifier si la ressource existe et appartient à l'utilisateur
+    if (!$ressource) {
+        return response()->json(['message' => 'Ressource non trouvée ou non autorisée'], 404);
     }
+
+    // Restaurer la ressource
+    $ressource->restore();
+
+    // Retourner une réponse JSON confirmant la restauration
+    return $this->customJsonResponse("Ressource restaurée avec succès", $ressource);
+}
+
+    
+public function forceDelete($id)
+{
+    // Vérifier le statut de l'utilisateur
+    if (auth()->user()->statut == 0) {
+        return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer définitivement des ressources'], 403);
+    }
+
+    // Récupérer la ressource supprimée qui correspond à l'utilisateur
+    $ressource = Ressource::onlyTrashed()->where('id', $id)->where('user_id', auth()->id())->first();
+
+    // Vérifier si la ressource existe et appartient à l'utilisateur
+    if (!$ressource) {
+        return response()->json(['message' => 'Ressource non trouvée ou non autorisée'], 404);
+    }
+
+    // Supprimer définitivement la ressource
+    $ressource->forceDelete();
+
+    // Retourner une réponse JSON confirmant la suppression définitive
+    return $this->customJsonResponse("Ressource supprimée définitivement", null, 200);
+}
+
+public function trashed()
+{
+    // Vérifier le statut de l'utilisateur
+    if (auth()->user()->statut == 0) {
+        return response()->json(['message' => 'Vous n\'êtes pas autorisé à voir les ressources archivées'], 403);
+    }
+
+    // Récupérer les ressources archivées appartenant à l'utilisateur authentifié
+    $ressources = Ressource::onlyTrashed()->where('user_id', auth()->id())->get();
+
+    // Retourner une réponse JSON avec les ressources archivées
+    return $this->customJsonResponse("Ressources archivées", $ressources);
+}
+
 }
