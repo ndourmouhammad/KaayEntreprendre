@@ -170,4 +170,4 @@ Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
 Route::post('/etapes', [EtapeController::class, 'store']);
 
 // Demande Accompagnement
-Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'store']);
+Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
