@@ -152,4 +152,11 @@ class AuthController extends Controller
 
         return response()->json(['user' => $user], 200);
     }
+
+    // Demande d'accompagnement personnalisé
+
+    public function demanderAccompagnement(Request $request)
+    {
+        
+    }
 }

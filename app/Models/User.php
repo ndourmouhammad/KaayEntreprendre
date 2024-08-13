@@ -97,4 +97,15 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Guide::class);
     }
+
+    public function sentAccompanimentRequests()
+{
+    return $this->hasMany(AccompagnementPersonnalise::class, 'sender_id');
+}
+
+public function receivedAccompanimentRequests()
+{
+    return $this->hasMany(AccompagnementPersonnalise::class, 'receiver_id');
+}
+
 }

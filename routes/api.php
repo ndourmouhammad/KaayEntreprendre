@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\AccompagnementPersonnaliseController;
 use App\Http\Controllers\RessourceController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
@@ -168,3 +168,6 @@ Route::get('categories', [CategorieController::class,'index'])->name('categorie'
 
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
 Route::post('/etapes', [EtapeController::class, 'store']);
+
+// Demande Accompagnement
+Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'store']);
