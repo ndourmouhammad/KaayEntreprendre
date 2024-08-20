@@ -108,4 +108,16 @@ public function receivedAccompanimentRequests()
     return $this->hasMany(AccompagnementPersonnalise::class, 'receiver_id');
 }
 
+// User.php
+public function getPhotoUrlAttribute()
+{
+    return $this->photo ? asset('storage/photos/' . str_replace('public/', '', $this->photo)) : null;
+}
+
+public function getCvUrlAttribute()
+{
+    return $this->cv ? asset('storage/cv/' . str_replace('public/', '', $this->cv)) : null;
+}
+
+
 }

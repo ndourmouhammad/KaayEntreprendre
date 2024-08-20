@@ -26,13 +26,20 @@ Route::get('/guides', [GuideController::class, 'index']);
 Route::get('/guides/{id}', [GuideController::class, 'show']);
 Route::get('categories', [CategorieController::class,'index'])->name('categorie');
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
+Route::get('/secteurs', [CategorieController::class,'index'])->name('secteurs');
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:api')->post('/refresh', [AuthController::class, 'refreshToken']);
-Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
-Route::middleware('auth:api')->post('/update/{id}', [AuthController::class, 'update'])->middleware('auth:api');
+Route::middleware('auth')->post('/refresh', [AuthController::class, 'refreshToken']);
+Route::middleware('auth')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth')->post('/update/{id}', [AuthController::class, 'update'])->middleware('auth:api');
+Route::get('nombre_entrepreneur', [AuthController::class, 'nombreEntrepreneurs'])->name('nombre_entrpreneur');
+Route::get('nombre_coach', [AuthController::class, 'nombreCoaches'])->name('nombre_coach');
+Route::get('nombre_evenements', [EvenementController::class, 'nombreEvenements'])->name('nombre_evenements');
+Route::get('nombre_evenements_a_venir', [EvenementController::class, 'nombreEvenementsAvenir'])->name('nombre_evenements_avenir');
+
+Route::get('ressources_categories/{id}', [RessourceController::class, 'indexByCategory']);
 
 
 
@@ -43,6 +50,7 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/users/{id}/role', [AdminController::class, 'changeRole'])->middleware('permission:changer_role');
     Route::post('/users/{id}/activate', [AdminController::class, 'activate'])->middleware('permission:activer_user');
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivate'])->middleware('permission:desactiver_user');
+    Route::get('/users/{id}', [AdminController::class, 'show'])->middleware('permission:lister_users');
 
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:lister_roles');

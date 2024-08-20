@@ -20,7 +20,7 @@ class AuthController extends Controller
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string|min:8',
         'password_confirmation' => 'required|same:password',
-        'photo' => 'required|mimes:jpeg,jpg,png|max:2048',
+        'photo' => 'required|mimes:jpeg,jpg,png,gif|max:4048',
         'adresse' => 'required|string|max:255',
         'telephone' => 'required|string|max:20|min:9|unique:users',
         'role' => 'required|string|in:entrepreneur,coach',
@@ -40,12 +40,14 @@ class AuthController extends Controller
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-        'photo' => $request->file('photo')->store('public/photos'),
+        'photo' => $request->file('photo') ? str_replace('public/', '', $request->file('photo')->store('public/photos')) : $user->photo,
+        
         'adresse' => $request->adresse,
         'telephone' => $request->telephone,
         'secteur_activite_id' => $request->secteur_activite_id,
         'statut' => $statut,
-        'cv' => $request->file('cv')->store('public/cv')
+        // 'cv' => $request->file('cv')->store('public/cv')
+        'cv' => $request->file('cv') ? str_replace('public/', '', $request->file('cv')->store('public/cvs')) : $user->cv,
     ]);
 
     // Assigner le rôle à l'utilisateur en fonction de la valeur du champ 'role'
@@ -63,34 +65,35 @@ class AuthController extends Controller
     // Connexion d'un utilisateur
 
     public function login(Request $request)
-    {
+{
+    // Validation
+    $validator = validator($request->all(), [
+        'email' => 'required|email|string',
+        'password' => 'required|string',
+    ]);
 
-        // Validation
-        $validator = validator($request->all(), [
-            'email' => 'required|email|string',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(["errors" => $validator->errors()], 422);
-        }
-
-        $credentials = $request->only('email', 'password');
-        $tocken = auth()->attempt($credentials);
-
-
-
-        if (!$tocken) {
-            return response()->json(["message" => "Informations incorrects"], 401);
-        }
-
-        return response()->json([
-            "access_token" => $tocken,
-            "token_type" => "Bearer",
-            "user" => auth()->user(),
-            "expires_in" => env('JWT_TTL') * 60 . " secondes"
-        ]);
+    if ($validator->fails()) {
+        return response()->json(["errors" => $validator->errors()], 422);
     }
+
+    $credentials = $request->only('email', 'password');
+    $token = auth()->attempt($credentials);
+
+    if (!$token) {
+        return response()->json(["message" => "Informations incorrects"], 401);
+    }
+
+    $user = auth()->user();
+    $user->load('roles'); // Load roles with the user
+
+    return response()->json([
+        "access_token" => $token,
+        "token_type" => "Bearer",
+        "user" => $user,
+        "expires_in" => env('JWT_TTL') * 60 . " secondes"
+    ]);
+}
+
 
     // Logout API - POST
     public function logout()
@@ -138,17 +141,19 @@ class AuthController extends Controller
         }
 
         // Mettre à jour les informations de l'utilisateur
-        $user->update([
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-            'photo' => $request->file('photo') ? $request->file('photo')->store('public/photos') : $user->photo,
-            'adresse' => $request->adresse ?? $user->adresse,
-            'telephone' => $request->telephone ?? $user->telephone,
-            'secteur_activite_id' => $request->secteur_activite_id ?? $user->secteur_activite_id,
-            'statut' => $request->statut ?? $user->statut,
-            'cv' => $request->file('cv') ? $request->file('cv')->store('public/cvs') : $user->cv,
-        ]);
+       // Dans votre méthode de mise à jour
+$user->update([
+    'name' => $request->name ?? $user->name,
+    'email' => $request->email ?? $user->email,
+    'password' => $request->password ? Hash::make($request->password) : $user->password,
+    'photo' => $request->file('photo') ? str_replace('public/', '', $request->file('photo')->store('public/photos')) : $user->photo,
+    'adresse' => $request->adresse ?? $user->adresse,
+    'telephone' => $request->telephone ?? $user->telephone,
+    'secteur_activite_id' => $request->secteur_activite_id ?? $user->secteur_activite_id,
+    'statut' => $request->statut ?? $user->statut,
+    'cv' => $request->file('cv') ? str_replace('public/', '', $request->file('cv')->store('public/cvs')) : $user->cv,
+]);
+
 
         return response()->json(['user' => $user], 200);
     }
@@ -158,5 +163,25 @@ class AuthController extends Controller
     public function demanderAccompagnement(Request $request)
     {
         
+    }
+
+    // Afficher le nombre de users avec le role entrepreneur
+
+    public function nombreEntrepreneurs()
+    {
+        $entrepreneurs = User::whereHas('roles', function ($query) {
+            $query->where('name', 'entrepreneur');
+        })->count();
+        return response()->json(['entrepreneurs' => $entrepreneurs], 200);
+    }
+
+    // Afficher le nombre de users avec le role coach
+
+    public function nombreCoaches()
+    {
+        $coaches = User::whereHas('roles', function ($query) {
+            $query->where('name', 'coach');
+        })->count();
+        return response()->json(['coaches' => $coaches], 200);
     }
 }

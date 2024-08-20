@@ -104,4 +104,18 @@ class EvenementController extends Controller
         $trashed = Evenement::onlyTrashed()->get();
         return $this->customJsonResponse("Liste des evenements supprimés", $trashed, 200);
     }
+
+    // Récupérer le nombre d'événement
+    public function nombreEvenements()
+    {
+        $evenements = Evenement::count();
+        return response()->json(['evenements' => $evenements], 200);
+    }
+
+    // Récupérer le nombre d'événement à venir
+    public function nombreEvenementsAvenir()
+    {
+        $evenements = Evenement::where('date_fin', '>', now())->count();
+        return response()->json(['evenements' => $evenements], 200);
+    }
 }

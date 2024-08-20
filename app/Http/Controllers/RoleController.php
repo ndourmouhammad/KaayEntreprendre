@@ -48,11 +48,42 @@ class RoleController extends Controller
     }
 
     // Donner des permissions aux roles dans mon api
-    public function givePermissions(Request $request, $id)
+//     public function givePermissions(Request $request, $id)
+// {
+//     // Valider la requête pour s'assurer que les permissions sont fournies
+//     $validatedData = Validator::make($request->all(), [
+//         'name' => 'required|exists:permissions,name',
+//     ]);
+
+//     if ($validatedData->fails()) {
+//         return response()->json([
+//             'status' => false,
+//             'message' => 'Validation error',
+//             'data' => $validatedData->errors()
+//         ], 400);
+//     }
+
+//     // Trouver le rôle par son ID
+//     $role = Role::findOrFail($id);
+
+//     // Synchroniser les permissions
+//     $role->givePermissionTo($validatedData->validated()['name']);
+
+//     // Retourner une réponse JSON personnalisée avec le rôle mis à jour
+//     return response()->json([
+//         'message' => 'Les permissions ont bien été attribuées',
+//         'role' => $role
+//     ], 200);
+// }
+
+public function givePermissions(Request $request, $roleId)
 {
+    // Debug: voir le contenu de la requête
+    \Log::info('Request Data:', $request->all());
+
     // Valider la requête pour s'assurer que les permissions sont fournies
     $validatedData = Validator::make($request->all(), [
-        'name' => 'required|exists:permissions,name',
+        'permissionId' => 'required|integer|exists:permissions,id',
     ]);
 
     if ($validatedData->fails()) {
@@ -63,16 +94,30 @@ class RoleController extends Controller
         ], 400);
     }
 
-    // Trouver le rôle par son ID
-    $role = Role::findOrFail($id);
+    $permissionId = $validatedData->validated()['permissionId'];
 
-    // Synchroniser les permissions
-    $role->givePermissionTo($validatedData->validated()['name']);
+    try {
+        // Trouver le rôle par ID
+        $role = Role::findOrFail($roleId);
 
-    // Retourner une réponse JSON personnalisée avec le rôle mis à jour
-    return response()->json([
-        'message' => 'Les permissions ont bien été attribuées',
-        'role' => $role
-    ], 200);
+        // Attacher la permission au rôle
+        $role->permissions()->syncWithoutDetaching([$permissionId]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Permission successfully added'
+        ], 200);
+    } catch (\Exception $e) {
+        // Log l'erreur et retourner une réponse d'erreur
+        \Log::error('Error assigning permission: ' . $e->getMessage());
+
+        return response()->json([
+            'status' => false,
+            'message' => 'An error occurred while assigning the permission',
+            'error' => $e->getMessage()
+        ], 500);
+    }
 }
+
+
 }

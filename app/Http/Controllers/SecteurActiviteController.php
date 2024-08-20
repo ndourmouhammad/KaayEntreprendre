@@ -13,7 +13,8 @@ class SecteurActiviteController extends Controller
      */
     public function index()
     {
-        //
+        $secteurActivite = SecteurActivite::all();
+        return response($secteurActivite,200);
     }
 
     /**

@@ -27,25 +27,30 @@ class RetourExperienceController extends Controller
     {
         // Créer une nouvelle instance de RetourExperience
         $retourExperience = new RetourExperience();
-
+    
         // Remplir le modèle avec les données validées
         $retourExperience->fill($request->validated());
-
+    
         // Ajouter le user_id de l'utilisateur connecté
         $retourExperience->user_id = auth()->id();
-
+    
         // Vérifier si une image a été téléchargée
         if ($request->hasFile('image')) {
             // Stocker l'image et enregistrer le chemin d'accès
-            $retourExperience->image = $request->file('image')->store('public/photos');
+            $imagePath = $request->file('image')->store('public/photos');
+            $retourExperience->image = str_replace('public/', '', $imagePath);
         }
-
+    
         // Sauvegarder le modèle dans la base de données
         $retourExperience->save();
-
+    
         // Retourner une réponse JSON personnalisée
-        return $this->customJsonResponse("Retour d'experience ajouté avec succès", $retourExperience, 201);
+        return response()->json([
+            'message' => "Retour d'expérience ajouté avec succès",
+            'data' => $retourExperience
+        ], 201);
     }
+    
 
     /**
      * Display the specified resource.
@@ -77,7 +82,9 @@ class RetourExperienceController extends Controller
                 File::delete(public_path($retourExperience->image));
             }
             // Stocker la nouvelle image
-            $retourExperience->image = $request->file('image')->store('public/photos');
+            // $retourExperience->image = $request->file('image') ? $request->file('image')->store('public/photos') : null;
+            $retourExperience->image = $request->file('image') ? str_replace('public/', '', $request->file('image')->store('public/photos')) : $retourExperience->image;
+            
         }
 
         // Sauvegarder les changements

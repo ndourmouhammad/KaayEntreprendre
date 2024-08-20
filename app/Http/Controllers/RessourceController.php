@@ -204,4 +204,16 @@ public function trashed()
     return $this->customJsonResponse("Ressources archivées", $ressources);
 }
 
+
+    // Afficher les ressources par catégories
+    public function indexByCategory($id)
+    {
+
+        // Récupérer les ressources par catégories
+        $ressources = Ressource::where('categorie_id', $id)->get();
+
+        // Retourner une réponse JSON avec les ressources par catégories
+        return $this->customJsonResponse("Ressources par catégories", $ressources);
+    }
+
 }
