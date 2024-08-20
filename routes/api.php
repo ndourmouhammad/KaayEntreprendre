@@ -36,6 +36,9 @@ Route::middleware('auth')->post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth')->post('/update/{id}', [AuthController::class, 'update'])->middleware('auth:api');
 Route::get('nombre_entrepreneur', [AuthController::class, 'nombreEntrepreneurs'])->name('nombre_entrpreneur');
 Route::get('nombre_coach', [AuthController::class, 'nombreCoaches'])->name('nombre_coach');
+Route::get('user_connecte', [AuthController::class, 'informations'])->name('user_connecte');
+
+
 Route::get('nombre_evenements', [EvenementController::class, 'nombreEvenements'])->name('nombre_evenements');
 Route::get('nombre_evenements_a_venir', [EvenementController::class, 'nombreEvenementsAvenir'])->name('nombre_evenements_avenir');
 

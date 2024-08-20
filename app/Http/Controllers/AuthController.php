@@ -184,4 +184,12 @@ $user->update([
         })->count();
         return response()->json(['coaches' => $coaches], 200);
     }
+
+    // Afficher les informations du user connecté
+
+    public function informations()
+    {
+        $user = auth()->user();
+        return response()->json(['user' => $user], 200);
+    }
 }
