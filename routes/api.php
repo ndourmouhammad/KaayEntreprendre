@@ -43,7 +43,9 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/users/{id}/role', [AdminController::class, 'changeRole'])->middleware('permission:changer_role');
     Route::post('/users/{id}/activate', [AdminController::class, 'activate'])->middleware('permission:activer_user');
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivate'])->middleware('permission:desactiver_user');
-
+    Route::get('/profil', [AdminController::class,'show']);
+    Route::put('/profil/{id}', [AdminController::class, 'updateProfile']);
+   
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:lister_roles');
     Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:ajouter_role');
@@ -123,7 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ressources', [RessourceController::class, 'store'])->middleware('permission:ajouter_ressource');
     Route::post('/ressources/{id}', [RessourceController::class, 'update'])->middleware('permission:modifier_ressource');
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
-    
+    Route::get('/ressourceCategorie/{id}', [RessourceController::class, 'getRessourcesByCategorie']);
     // Routes pour Sofdelete Ressource
     Route::get('trashed-ressources', [RessourceController::class, "trashed"])->middleware('permission:lister_ressources_supprimées');
     Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware('permission:supprimer_ressource_supprimée');

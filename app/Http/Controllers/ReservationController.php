@@ -23,15 +23,17 @@ class ReservationController extends Controller
         return response()->json($reservations, 200);
     }
     public function mesReservations()
-    { 
-        $reservations= Reservation::where('user_id', auth::id())->get();
-      
-        return response()->json([
-            'status' => true,
-            'message' => "Réservations affichées avec succès",
-            "data" => $reservations
-        ], 200);
-    }
+{
+    $reservations = Reservation::with('evenement')
+        ->where('user_id', auth()->id())
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'message' => "Réservations affichées avec succès",
+        'data' => $reservations
+    ], 200);
+}
     public function reserver(Request $request, $evenement_id)
     {
         // Validate the request
