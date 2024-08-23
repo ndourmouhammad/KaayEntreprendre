@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\AccompagnementPersonnaliseController;
-use App\Http\Controllers\RessourceController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\EvenementController;
-use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EtapeController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\EtapeController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\RessourceController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SecteurActiviteController;
+use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AccompagnementPersonnaliseController;
 
 // public
 Route::apiResource('discussions', DiscussionController::class)->except('update', 'store','destroy');
@@ -26,6 +27,7 @@ Route::get('/guides', [GuideController::class, 'index']);
 Route::get('/guides/{id}', [GuideController::class, 'show']);
 Route::get('categories', [CategorieController::class,'index'])->name('categorie');
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
+route::apiResource('/secteurActivite',SecteurActiviteController::class)->only('index','');
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('libelle');
             $table->string('pieces_jointes')->nullable();
+            $table->foreignIdFor(Guide::class)->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

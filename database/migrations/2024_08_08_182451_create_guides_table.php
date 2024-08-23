@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('titre');
             $table->text('contenu');
-            $table->foreignIdFor(Etape::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
