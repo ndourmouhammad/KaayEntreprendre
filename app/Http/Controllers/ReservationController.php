@@ -18,10 +18,18 @@ class ReservationController extends Controller
 {
     // ...
     public function reservationsEvenement($evenement_id)
-    {
-        $reservations = Reservation::where('evenement_id', $evenement_id)->get();
-        return response()->json($reservations, 200);
-    }
+{
+    $reservations = Reservation::where('evenement_id', $evenement_id)
+                                ->whereIn('status', ['accepte', 'en_attente']) // Filtrer par statut
+                                ->with('user:id,name,email,telephone') // Inclure seulement l'id et le nom de l'utilisateur
+                                ->get();
+
+    return response()->json($reservations, 200);
+}
+
+
+
+
     public function mesReservations()
     { 
         $reservations= Reservation::where('user_id', auth::id())->get();

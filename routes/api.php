@@ -25,6 +25,7 @@ Route::get('/ressources/{id}', [RessourceController::class, 'show']);
 Route::get('/guides', [GuideController::class, 'index']);
 Route::get('/guides/{id}', [GuideController::class, 'show']);
 Route::get('categories', [CategorieController::class,'index'])->name('categorie');
+Route::get('categories/{id}', [CategorieController::class,'show'])->name('etapes.show');
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
 Route::get('/secteurs', [CategorieController::class,'index'])->name('secteurs');
 
@@ -82,6 +83,10 @@ Route::middleware(["auth"])->group(function () {
     });
 });
 
+
+Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation']);
+Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation']);
+
 Route::middleware(["auth"])->group(function () {
     Route::post('evenements', [EvenementController::class, 'store'])->middleware('permission:ajouter_evenement');
     Route::post('evenements/{id}', [EvenementController::class, 'update'])->middleware('permission:modifier_evenement');
@@ -96,10 +101,10 @@ Route::middleware(["auth"])->group(function () {
     Route::get('evenements/{id}/reservations', [ReservationController::class, 'reservationsEvenement'])->middleware('permission:lister_resersations');
 
     // confirmer réservation (bientot ajout des permissions)
-    Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation'])->middleware('permission:confirmer_reservation');
+    // Route::post('reservations/{id}/confirmer', [ReservationController::class, 'confirmerReservation'])->middleware('permission:confirmer_reservation');
 
     // refuser une reservation (bientot ajout des permissions)
-    Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation'])->middleware('permission:refuser_reservation');
+    // Route::post('reservations/{id}/refuser', [ReservationController::class, 'refuserReservation'])->middleware('permission:refuser_reservation');
 
     // Route pour afficher la liste des événements supprimés (soft deleted)
     Route::get('trashed-evenements', [EvenementController::class, 'trash'])->name('evenements.trashed')->middleware('permission:lister_evenements_supprimés');

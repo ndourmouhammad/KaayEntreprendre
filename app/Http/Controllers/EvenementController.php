@@ -26,9 +26,21 @@ class EvenementController extends Controller
     {
         $evenement = new Evenement();
         $evenement->fill($request->validated());
+        // if ($request->hasFile('image')) {
+        //     $evenement->image = $request->file('image')->store('public/photos');
+        // }
+
+        // if ($request->hasFile('image')) {
+        //     // Stocker l'image et enregistrer le chemin d'accès
+        //     $imagePath = $request->file('image')->store('public/photos');
+        //     $retourExperience->image = str_replace('public/', '', $imagePath);
+        // }
+
         if ($request->hasFile('image')) {
-            $evenement->image = $request->file('image')->store('public/photos');
+            $imagePath = $request->file('image')->store('public/photos');
+            $evenement->image = str_replace('public/', '', $imagePath);
         }
+    
         $evenement->save();
         return $this->customJsonResponse("Evenement ajouté avec succès", $evenement, 201);
     }
@@ -56,7 +68,15 @@ class EvenementController extends Controller
             if (File::exists(public_path($evenement->image))) {
                 File::delete(public_path($evenement->image));
             }
-            $evenement->image = $request->file('image')->store('public/photos');
+            // $evenement->image = $request->file('image')->store('public/photos');
+            // if ($request->hasFile('image')) {
+            //     // Stocker l'image et enregistrer le chemin d'accès
+            //     $imagePath = $request->file('image')->store('public/photos');
+            //     $retourExperience->image = str_replace('public/', '', $imagePath);
+            // }
+
+            $imagePath = $request->file('image')->store('public/photos');
+            $evenement->image = str_replace('public/', '', $imagePath);
         }
         $evenement->update();
         return $this->customJsonResponse("Evenement mis à jour avec succès", $evenement, 200);

@@ -40,13 +40,26 @@ class RessourceController extends Controller
         $ressource->fill($request->validated());
     
         // Gérer le téléchargement du fichier d'image
+        // if ($request->hasFile('image')) {
+        //     $ressource->image = $request->file('image')->store('public/photos');
+        // }
+
+        // $imagePath = $request->file('image')->store('public/photos');
+        //     $evenement->image = str_replace('public/', '', $imagePath);
+
         if ($request->hasFile('image')) {
-            $ressource->image = $request->file('image')->store('public/photos');
+            $imagePath = $request->file('image')->store('public/photos');
+            $ressource->image = str_replace('public/', '', $imagePath);
         }
     
         // Gérer le téléchargement du fichier contenu
+        // if ($request->hasFile('contenu')) {
+        //     $ressource->contenu = $request->file('contenu')->store('public/contenu');
+        // }
+
         if ($request->hasFile('contenu')) {
-            $ressource->contenu = $request->file('contenu')->store('public/contenu');
+            $contenuPath = $request->file('contenu')->store('public/contenu');
+            $ressource->contenu = str_replace('public/', '', $contenuPath);
         }
     
         // Assigner l'ID de l'utilisateur authentifié au champ user_id
@@ -99,7 +112,12 @@ class RessourceController extends Controller
                 File::delete(public_path($ressource->image));
             }
             // Enregistrer la nouvelle image
-            $ressource->image = $request->file('image')->store('public/photos');
+            // $imagePath = $request->file('image')->store('public/photos');
+            // $evenement->image = str_replace('public/', '', $imagePath);
+
+            $imagePath = $request->file('image')->store('public/photos');
+            $ressource->image = str_replace('public/', '', $imagePath);
+            
         }
     
         // Gérer la mise à jour du fichier contenu
@@ -109,7 +127,10 @@ class RessourceController extends Controller
                 File::delete(public_path($ressource->contenu));
             }
             // Enregistrer le nouveau contenu
-            $ressource->contenu = $request->file('contenu')->store('public/contenu');
+            // $ressource->contenu = $request->file('contenu')->store('public/contenu');
+
+            $contenuPath = $request->file('contenu')->store('public/contenu');
+            $ressource->contenu = str_replace('public/', '', $contenuPath);
         }
     
         // Enregistrer les modifications dans la base de données

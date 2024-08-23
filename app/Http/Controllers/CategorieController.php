@@ -40,9 +40,14 @@ class CategorieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Categorie $categorie)
+    public function show($id)
     {
-        //
+        $categories = Categorie::find($id);
+        return response()->json([
+            'status'=>true,
+            'message'=>'catégorie recuperer avec succés',
+            'data'=>$categories
+        ],200);
     }
 
     /**
