@@ -17,8 +17,8 @@ class GuideController extends Controller
      */
     public function index()
     {
-        $guide = Guide::all();
-        return $this->customJsonResponse("Liste des guides", $guide, 200);
+        $guides = Guide::with('etapes')->get();
+        return $this->customJsonResponse("guides", $guides, 200);
     }
 
     /**
@@ -49,15 +49,15 @@ class GuideController extends Controller
      */
     public function show($id)
     {
-        $guide = Guide::findOrFail($id);
+        $guide = Guide::with('etapes')->find($id);
 
         if (!$guide) {
-
-            return response()->json(['message'=>'guide non trouvé'],404);
+            return response()->json(['message' => 'Guide not found'], 404);
         }
 
-        return $this->customJsonResponse("guide", $guide, 200);
+        return response()->json($guide);
     }
+    
 
 
     /**

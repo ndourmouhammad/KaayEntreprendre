@@ -58,10 +58,16 @@ class EtapeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Etape $etape)
-    {
-        //
-    }
+    public function show(Etape $etape, $id)
+{
+    $etape = Etape::findOrFail($id);
+    return response()->json([
+        'status' => true, // Correction ici
+        'message' => 'Etape récupérée avec succès',
+        'data' => $etape
+    ], 200);
+}
+
 
     /**
      * Show the form for editing the specified resource.

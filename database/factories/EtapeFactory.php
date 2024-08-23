@@ -17,6 +17,7 @@ class EtapeFactory extends Factory
     {
         return [
             'libelle' => $this->faker->sentence,
+            'description'=> $this->faker->paragraph,
             'pieces_jointes' => $this->faker->filePath(),
             'guide_id' => Guide::factory(),
         ];

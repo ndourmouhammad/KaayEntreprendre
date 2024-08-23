@@ -23,10 +23,10 @@ Route::apiResource('retour-experience', RetourExperienceController::class)->only
 Route::apiResource('evenements', EvenementController::class)->only('index', 'show');
 Route::get('/ressources',[RessourceController::class, 'index']);
 Route::get('/ressources/{id}', [RessourceController::class, 'show']);
-Route::get('/guides', [GuideController::class, 'index']);
 Route::get('/guides/{id}', [GuideController::class, 'show']);
 Route::get('categories', [CategorieController::class,'index'])->name('categorie');
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
+Route::get('etapes/{id}', [EtapeController::class, 'show']);
 route::apiResource('/secteurActivite',SecteurActiviteController::class)->only('index','');
 
 // Authentification
