@@ -14,7 +14,8 @@ class DiscussionController extends Controller
      */
     public function index()
     {
-        $discussions=Discussion::all();
+        $discussions = Discussion::with('user:id,name,photo')->get();
+        
         return response()->json($discussions);
         //
     }
@@ -49,10 +50,34 @@ class DiscussionController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-    {
-        $discussion=Discussion::findOrFail($id);
-        return response()->json($discussion,200);
+{
+    $discussion = Discussion::where('id', $id)
+        ->with([
+            'user:id,name,photo', // Include user details
+            'commentaires' => function ($query) {
+                $query->select('id', 'contenu', 'user_id', 'discussion_id', 'created_at', 'updated_at')
+                      ->with('user:id,name'); // Include user details for comments
+            }
+        ])
+        ->first();
+
+    return response()->json($discussion, 200);
+}
+
+public function comments($id)
+{
+    $discussion = Discussion::with('commentaires')->find($id); // Notez 'commentaires' ici
+
+    if (!$discussion) {
+        return response()->json(['message' => 'Discussion not found'], 404);
     }
+
+    $commentaires = $discussion->commentaires; // Utilisez 'commentaires' ici
+
+    return response()->json(['message' => 'Comments retrieved successfully', 'data' => $commentaires]);
+}
+
+
 
     /**
      * Show the form for editing the specified resource.

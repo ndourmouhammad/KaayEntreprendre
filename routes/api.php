@@ -80,7 +80,7 @@ Route::middleware(["auth"])->group(function () {
 
     // Commentaires
     Route::prefix('discussions/{discussion}')->group(function () {
-        Route::get('commentaires', [CommentaireController::class, 'index']);
+        // Route::get('commentaires', [CommentaireController::class, 'index']);
         Route::post('commentaire', [CommentaireController::class, 'store']);
         Route::post('commentaire/{id}', [commentaireController::class, 'update']);
         Route::delete('commentaire/{id}', [CommentaireController::class, 'destroy']);
@@ -166,6 +166,10 @@ Route::middleware("auth")->group(function () {
 // Demande Accompagnement
 Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
 });
+
+// routes/api.php
+Route::get('discussions/{id}/commentaires', [DiscussionController::class, 'comments']);
+
 
 
 
