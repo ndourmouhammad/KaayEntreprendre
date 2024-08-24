@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
+  
     use HasFactory, Notifiable, HasRoles;
 
     /**
@@ -43,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    protected function secteur_activite()
+    public function secteurActivite()
     {
         return $this->belongsTo(SecteurActivite::class);
     }

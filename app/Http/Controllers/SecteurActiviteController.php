@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSecteurActiviteRequest;
 use App\Http\Requests\UpdateSecteurActiviteRequest;
 use App\Models\SecteurActivite;
+use Illuminate\Http\JsonResponse;
 
 class SecteurActiviteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index():JsonResponse
     {
-        //
+        $secteurActivite = SecteurActivite::all();
+        return response()->json($secteurActivite);
     }
 
     /**

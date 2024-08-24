@@ -1,20 +1,23 @@
 <?php
 
-use App\Http\Controllers\AccompagnementPersonnaliseController;
-use App\Http\Controllers\RessourceController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PermissionController;
+use App\Models\Demmande_accompagnement;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\EvenementController;
-use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CoachController;
+use App\Http\Controllers\EtapeController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\EtapeController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\RessourceController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SecteurActiviteController;
+use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AccompagnementPersonnaliseController;
 
 // public
 Route::apiResource('discussions', DiscussionController::class)->except('update', 'store','destroy');
@@ -34,6 +37,14 @@ Route::middleware('auth:api')->post('/refresh', [AuthController::class, 'refresh
 Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:api')->post('/update/{id}', [AuthController::class, 'update'])->middleware('auth:api');
 
+//Liste des coaches pour demmande d'accompagnement personnalisé
+Route::get('/coaches', [AccompagnementPersonnaliseController::class, 'getCoaches']);
+//afficher la liste des secteur d'activité
+Route::get('/secteurs', [SecteurActiviteController::class, 'index']);
+//afficher la liste des coaches par secteur
+Route::get('/coaches/secteur/{id}', [CoachController::class, 'getCoachesBySecteur']);
+//afficher les détail du coach
+Route::get('/coach/{id}', [CoachController::class, 'show']);
 
 
 
