@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\AccompagnementPersonnaliseController;
-use App\Http\Controllers\RessourceController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\DiscussionController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\EvenementController;
-use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EtapeController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\CategorieController;
-use App\Http\Controllers\EtapeController;
+use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\RessourceController;
+use App\Http\Controllers\DiscussionController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\CommentaireController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SecteurActiviteController;
+use App\Http\Controllers\RetourExperienceController;
+use App\Http\Controllers\AccompagnementPersonnaliseController;
 
 // public
 Route::apiResource('discussions', DiscussionController::class)->except('update', 'store','destroy');
@@ -27,7 +28,7 @@ Route::get('/guides/{id}', [GuideController::class, 'show']);
 Route::get('categories', [CategorieController::class,'index'])->name('categorie');
 Route::get('categories/{id}', [CategorieController::class,'show'])->name('etapes.show');
 Route::get('/etapes', [EtapeController::class,'index'])->name('etapes.index');
-Route::get('/secteurs', [CategorieController::class,'index'])->name('secteurs');
+route::apiResource('/secteurActivite',SecteurActiviteController::class)->only('index','');
 
 // Authentification
 Route::post('/register', [AuthController::class, 'register']);
@@ -56,6 +57,9 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivate'])->middleware('permission:desactiver_user');
     Route::get('/users/{id}', [AdminController::class, 'show'])->middleware('permission:lister_users');
 
+    Route::get('/profil', [AdminController::class,'show']);
+    Route::put('/profil/{id}', [AdminController::class, 'updateProfile']);
+   
     // Roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('permission:lister_roles');
     Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:ajouter_role');
@@ -139,7 +143,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ressources', [RessourceController::class, 'store'])->middleware('permission:ajouter_ressource');
     Route::post('/ressources/{id}', [RessourceController::class, 'update'])->middleware('permission:modifier_ressource');
     Route::delete('/ressources/{id}', [RessourceController::class, 'destroy'])->middleware('permission:supprimer_ressource');
-    
+    Route::get('/ressourceCategorie/{id}', [RessourceController::class, 'getRessourcesByCategorie']);
     // Routes pour Sofdelete Ressource
     Route::get('trashed-ressources', [RessourceController::class, "trashed"])->middleware('permission:lister_ressources_supprimées');
     Route::delete('ressources/{id}/force-delete', [RessourceController::class, "forceDelete"])->middleware('permission:supprimer_ressource_supprimée');

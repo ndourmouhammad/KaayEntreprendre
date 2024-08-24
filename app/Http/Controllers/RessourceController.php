@@ -224,6 +224,20 @@ public function trashed()
     // Retourner une réponse JSON avec les ressources archivées
     return $this->customJsonResponse("Ressources archivées", $ressources);
 }
+public function getRessourcesByCategorie($id)
+{
+   
+
+   
+    $ressources = Ressource::where('categorie_id', $id)->get();
+
+    // Vérifier s'il y a des ressources trouvées
+    if ($ressources->isEmpty()) {
+        return response()->json(['message' => 'Aucune ressource trouvée pour cette catégorie'], 404);
+    }
+
+    return response()->json(['data' => $ressources], 200);
+}
 
 
     // Afficher les ressources par catégories

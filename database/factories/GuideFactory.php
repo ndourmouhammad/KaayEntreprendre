@@ -18,7 +18,6 @@ class GuideFactory extends Factory
             'titre' => $this->faker->sentence,
             'contenu' => $this->faker->paragraphs(3, true),
             'user_id' => $this->faker->numberBetween(1, 10),
-            'etape_id' => Etape::factory(),
 
 
         ];
