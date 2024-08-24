@@ -45,6 +45,9 @@ class EtapeController extends Controller
         if ($request->hasFile('pieces_jointes')) {
             $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
         }
+
+        // Add the guide_id foriegn key
+        $etape->guide_id = $request->guide_id;
     
         // Save the resource to the database
         $etape->save();

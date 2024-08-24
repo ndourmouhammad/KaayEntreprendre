@@ -30,13 +30,13 @@ class GuideController extends Controller
 
             'titre' => 'required|string|max:255',
             'contenu' => 'required|string',
-            'etape_id' => 'required|exists:etapes,id',
+            
         ]);
 
         $guide = Guide::create([
             "titre" => $validated["titre"],
             "contenu" => $validated["contenu"],
-            "etape_id" => $validated["etape_id"],
+            
             "user_id" => Auth::id(),
         ]);
 
@@ -48,16 +48,19 @@ class GuideController extends Controller
      * Display the specified resource.
      */
     public function show($id)
-    {
-        $guide = Guide::findOrFail($id);
+{
+    // Récupérer le guide avec ses étapes associées
+    $guide = Guide::with('etapes')->findOrFail($id);
 
-        if (!$guide) {
-
-            return response()->json(['message'=>'guide non trouvé'],404);
-        }
-
-        return $this->customJsonResponse("guide", $guide, 200);
+    // Vérifier si le guide existe (cette vérification est redondante avec findOrFail)
+    if (!$guide) {
+        return response()->json(['message' => 'Guide non trouvé'], 404);
     }
+
+    // Préparer une réponse JSON personnalisée avec les étapes incluses
+    return $this->customJsonResponse("guide", $guide, 200);
+}
+
 
 
     /**
@@ -71,7 +74,7 @@ class GuideController extends Controller
 
             'titre' => 'sometimes|string|max:255',
             'contenu' => 'sometimes|string',
-            'etape_id' => 'sometimes|exists:etapes,id',
+            
         ]);
 
 

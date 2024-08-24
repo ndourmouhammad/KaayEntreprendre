@@ -57,7 +57,7 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivate'])->middleware('permission:desactiver_user');
     Route::get('/users/{id}', [AdminController::class, 'show'])->middleware('permission:lister_users');
 
-    Route::get('/profil', [AdminController::class,'show']);
+    // Route::get('/profil', [AdminController::class,'show']);
     Route::put('/profil/{id}', [AdminController::class, 'updateProfile']);
    
     // Roles

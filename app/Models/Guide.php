@@ -18,8 +18,8 @@ class Guide extends Model
     }
 
 
-    public function etape()
+    public function etapes()
     {
-        return $this->belongsTo(Etape::class);
+        return $this->hasMany(Etape::class);
     }
 }
