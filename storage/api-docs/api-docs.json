@@ -23,6 +23,151 @@
         "multipart/form-data"
     ],
     "paths": {
+        "/api/coach/{id}": {
+            "get": {
+                "summary": "Détails coach",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Secteur d'activité"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/coaches/secteur/{id}": {
+            "get": {
+                "summary": "liste des coaches  par secteur",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Secteur d'activité"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/secteurActivite": {
+            "get": {
+                "summary": "lister les secteurs d'activité",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Secteur d'activité"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/accompagnement/{id}": {
             "post": {
                 "summary": "Demande d'accompagnement personnalisée",
@@ -57,6 +202,56 @@
                     },
                     "403": {
                         "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Demande d'accompagnement"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/coaches-accompagnement": {
+            "get": {
+                "summary": "Liste des coaches",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -119,6 +314,56 @@
                     "Catégorie"
                 ],
                 "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/categories/{id}": {
+            "get": {
+                "summary": "Lister une categorie",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Catégorie"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
                     {
                         "in": "header",
                         "name": "User-Agent",
@@ -234,6 +479,12 @@
                                     "pieces_jointes": {
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "guide_id": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
                                     }
                                 }
                             },
@@ -242,7 +493,9 @@
                                 "pieces_jointes": {
                                     "type": "string",
                                     "format": "binary"
-                                }
+                                },
+                                "guide_id": "1",
+                                "description": "Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page, le texte définitif venant remplacer le faux-texte dès qu'il est prêt ou que la mise en page est achevée. "
                             }
                         }
                     }
@@ -312,16 +565,12 @@
                                     },
                                     "contenu": {
                                         "type": "string"
-                                    },
-                                    "etape_id": {
-                                        "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "titre": "Etape3",
-                                "contenu": "test etape",
-                                "etape_id": "3"
+                                "titre": "Guide générale",
+                                "contenu": "test etape"
                             }
                         }
                     }
@@ -861,6 +1110,56 @@
                 }
             }
         },
+        "/api/ressources_categories/{id}": {
+            "get": {
+                "summary": "Afficher les ressources par catégorie",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Ressources"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/trashed-ressources": {
             "get": {
                 "summary": "Afficher les ressources supprimées",
@@ -1155,12 +1454,12 @@
                                 }
                             },
                             "example": {
-                                "titre": "testfinale",
+                                "titre": "L'entreprenariat et l'informatique",
                                 "contenu": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "description": "desc test",
+                                "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
                                 "image": {
                                     "type": "string",
                                     "format": "binary"
@@ -1533,12 +1832,12 @@
                                 }
                             },
                             "example": {
-                                "libelle": "Retourd'exp",
+                                "libelle": "Témoignage d'Anna Marone - Les clés de ma réussite dans le monde l’entreprenariat",
                                 "image": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "contenu": "experience"
+                                "contenu": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, "
                             }
                         }
                     }
@@ -1903,6 +2202,11 @@
                 ],
                 "parameters": [
                     {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
                         "in": "header",
                         "name": "User-Agent",
                         "type": "string"
@@ -2055,12 +2359,12 @@
                                 }
                             },
                             "example": {
-                                "theme": "Masterclass",
+                                "theme": "Atelier Linkedin",
                                 "description": "ceci est une description",
                                 "lieu": "Mermoz",
                                 "nombre_places": "25",
-                                "date_debut": "2024-08-20 09:00:00",
-                                "date_fin": "2024-08-25 17:00:00",
+                                "date_debut": "2024-08-18 09:00:00",
+                                "date_fin": "2024-08-19 17:00:00",
                                 "prix": "2000",
                                 "image": {
                                     "type": "string",
@@ -2206,13 +2510,13 @@
                                 }
                             },
                             "example": {
-                                "theme": "Masterclass1506",
-                                "description": "ceci est une description",
-                                "lieu": "Dakar",
-                                "nombre_places": "45",
+                                "theme": "2020 Business conference",
+                                "description": "Durant cette journée, nous allons honorer l'élite du département de Diourbel.",
+                                "lieu": "Mbour",
+                                "nombre_places": "100",
                                 "date_debut": "2024-09-17 08:41:50",
                                 "date_fin": "2024-09-24 17:49:50",
-                                "prix": "1500",
+                                "prix": "15000",
                                 "image": {
                                     "type": "string",
                                     "format": "binary"
@@ -2429,6 +2733,96 @@
                         "name": "id",
                         "type": "string"
                     },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/nombre_evenements": {
+            "get": {
+                "summary": "nombre événements",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Evenements"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/nombre_evenements_a_venir": {
+            "get": {
+                "summary": "nombre événements à venir",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Evenements"
+                ],
+                "parameters": [
                     {
                         "in": "header",
                         "name": "User-Agent",
@@ -3004,7 +3398,9 @@
                         "type": "string"
                     }
                 ]
-            },
+            }
+        },
+        "/api/discussions/{id}/commentaires": {
             "get": {
                 "summary": "Afficher une discussion",
                 "description": "",
@@ -3100,6 +3496,54 @@
             }
         },
         "/api/users/{id}": {
+            "get": {
+                "summary": "lister les détails d'un user",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            },
             "delete": {
                 "summary": "Bannir un user",
                 "description": "",
@@ -3662,13 +4106,13 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "name": {
+                                    "permissionId": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
-                                "name": "lister_reservation"
+                                "permissionId": "6"
                             }
                         }
                     }
@@ -4105,6 +4549,141 @@
                 }
             }
         },
+        "/api/nombre_entrepreneur": {
+            "get": {
+                "summary": "nombre entrepreneurs",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentification"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/user_connecte": {
+            "get": {
+                "summary": "les informations de l'utilisateur connecté",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentification"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/nombre_coach": {
+            "get": {
+                "summary": "nombre coach",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentification"
+                ],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "summary": "register",
@@ -4198,18 +4777,18 @@
                                 }
                             },
                             "example": {
-                                "name": "bineta",
+                                "name": "Mouhammad",
                                 "password": "passer123",
-                                "email": "binette@gmail.com",
+                                "email": "mou.ndour@isepdiamniadio.edu.sn",
                                 "password_confirmation": "passer123",
                                 "photo": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "adresse": "Fatick",
-                                "telephone": "784615842",
-                                "secteur_activite_id": "6",
-                                "role": "entrepreneur",
+                                "adresse": "Thiawlene",
+                                "telephone": "784615840",
+                                "secteur_activite_id": "2",
+                                "role": "coach",
                                 "cv": {
                                     "type": "string",
                                     "format": "binary"
@@ -4318,7 +4897,7 @@
                                 }
                             },
                             "example": {
-                                "name": "Mouhammad Ndour",
+                                "name": "Mouhammad",
                                 "password": "passer123",
                                 "email": "ndourmouhammad15@gmail.com",
                                 "password_confirmation": "passer123",
@@ -4327,13 +4906,13 @@
                                     "format": "binary"
                                 },
                                 "adresse": "Rufisque",
-                                "telephone": "767569740",
+                                "telephone": "767569711",
                                 "statut": "1",
                                 "cv": {
                                     "type": "string",
                                     "format": "binary"
                                 },
-                                "secteur_activite_id": "1"
+                                "secteur_activite_id": "3"
                             }
                         }
                     }
