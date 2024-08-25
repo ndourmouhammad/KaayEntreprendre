@@ -33,4 +33,12 @@ class AccompagnementPersonnaliseController extends Controller
     return response()->json(['message' => 'Demande d\'accompagnement envoyée']);
 }
 
+public function getCoaches() {
+    return User::with('secteur_activite')
+        ->whereHas('roles', function($query) {
+            $query->where('name', 'coach');
+        })->get();
+}
+
+
 }

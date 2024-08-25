@@ -43,17 +43,17 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    protected function secteur_activite()
+    public function secteur_activite()
     {
-        return $this->belongsTo(SecteurActivite::class);
+        return $this->belongsTo(SecteurActivite::class, 'secteur_activite_id');
     }
 
-    protected function ressources()
+    public function ressources()
     {
         return $this->hasMany(Ressource::class);
     }
 
-    protected function commentaires()
+    public function commentaires()
     {
         return $this->hasMany(Commentaire::class);
     }

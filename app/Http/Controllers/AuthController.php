@@ -192,4 +192,38 @@ $user->update([
         $user = auth()->user();
         return response()->json(['user' => $user], 200);
     }
+
+    public function getCoachesBySecteur($id) 
+{
+    $coaches = User::where('secteur_activite_id', $id)
+                   ->whereHas('roles', function($query) {
+                       $query->where('name', 'coach');
+                   })
+                   ->with('secteur_activite')
+                   ->get();
+
+    return response()->json($coaches);
+}
+
+public function show($id)
+{
+    // Récupère l'utilisateur par ID avec les données de secteur d'activité
+    $user = User::with('secteur_activite')->find($id);
+
+    // Vérifie si l'utilisateur existe
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    // Vérifie si l'utilisateur a le rôle 'coach'
+    if (!$user->hasRole('coach')) {
+        return response()->json(['message' => 'User is not a coach'], 403);
+    }
+
+    // Retourne les détails du coach avec le secteur d'activité
+    return response()->json($user);
+}
+
+
+
 }

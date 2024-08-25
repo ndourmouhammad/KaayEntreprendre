@@ -41,6 +41,15 @@ Route::get('nombre_coach', [AuthController::class, 'nombreCoaches'])->name('nomb
 Route::get('user_connecte', [AuthController::class, 'informations'])->name('user_connecte');
 
 
+//Liste des coaches pour demmande d'accompagnement personnalisé
+Route::get('/coaches-accompagnement', [AccompagnementPersonnaliseController::class, 'getCoaches']);
+//afficher la liste des secteur d'activité
+// Route::get('/secteurs', [SecteurActiviteController::class, 'index']);
+//afficher la liste des coaches par secteur
+Route::get('/coaches/secteur/{id}', [AuthController::class, 'getCoachesBySecteur']);
+//afficher les détail du coach
+Route::get('/coach/{id}', [AuthController::class, 'show']);
+
 Route::get('nombre_evenements', [EvenementController::class, 'nombreEvenements'])->name('nombre_evenements');
 Route::get('nombre_evenements_a_venir', [EvenementController::class, 'nombreEvenementsAvenir'])->name('nombre_evenements_avenir');
 
@@ -164,7 +173,7 @@ Route::middleware("auth")->group(function () {
     Route::post('/etapes', [EtapeController::class, 'store'])->middleware('permission:ajouter_etape');
 
 // Demande Accompagnement
-Route::post('/accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
+Route::post('accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
 });
 
 // routes/api.php
