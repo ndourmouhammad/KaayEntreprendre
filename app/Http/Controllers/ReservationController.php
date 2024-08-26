@@ -42,45 +42,56 @@ class ReservationController extends Controller
         'data' => $reservations
     ], 200);
 }
-    public function reserver(Request $request, $evenement_id)
-    {
-        // Validate the request
-        $validatedData = Validator::make($request->all(), [
-            'status' => 'nullable|in:en_attente,accepte,refuse',
-        ]);
-    
-        if ($validatedData->fails()) {
-            return response()->json([
-                "status" => false,
-                "message" => "Validation error",
-                "data" => $validatedData->errors()
-            ], 400);
-        }
-    
-        // Retrieve validated status or set default
-        $validated = $validatedData->validated();
-        $validated['status'] = $validated['status'] ?? 'en_attente';
-    
-        // Prepare data for creation
-        $data = [
-            'evenement_id' => $evenement_id,
-            'user_id' => auth::id(),
-            'status' => $validated['status'],
-        ];
-    
-        // Create the reservation
-        $reservation = Reservation::create($data);
-    
-        // Send email notification to the user
-        Mail::to($reservation->user->email)->send(new ReservationNotification($reservation));
-    
+   public function reserver(Request $request, $evenement_id)
+{
+    // Vérifier si l'utilisateur a déjà réservé pour cet événement
+    $existingReservation = Reservation::where('evenement_id', $evenement_id)
+                                       ->where('user_id', auth()->id())
+                                       ->first();
+
+    if ($existingReservation) {
         return response()->json([
-            "status" => true,
-            "message" => "Réservation ajoutée avec succès",
-            "data" => $reservation
-        ], 201);
+            "status" => false,
+            "message" => "Vous avez déjà réservé pour cet événement.",
+        ], 400);
     }
-    
+
+    // Valider la requête
+    $validatedData = Validator::make($request->all(), [
+        'status' => 'nullable|in:en_attente,accepte,refuse',
+    ]);
+
+    if ($validatedData->fails()) {
+        return response()->json([
+            "status" => false,
+            "message" => "Erreur de validation",
+            "data" => $validatedData->errors()
+        ], 400);
+    }
+
+    // Récupérer le statut validé ou définir une valeur par défaut
+    $validated = $validatedData->validated();
+    $validated['status'] = $validated['status'] ?? 'en_attente';
+
+    // Préparer les données pour la création
+    $data = [
+        'evenement_id' => $evenement_id,
+        'user_id' => auth::id(),
+        'status' => $validated['status'],
+    ];
+
+    // Créer la réservation
+    $reservation = Reservation::create($data);
+
+    // Envoyer une notification par email à l'utilisateur
+    Mail::to($reservation->user->email)->send(new ReservationNotification($reservation));
+
+    return response()->json([
+        "status" => true,
+        "message" => "Réservation ajoutée avec succès",
+        "data" => $reservation
+    ], 201);
+}
 
 
     public function confirmerReservation($reservation_id)

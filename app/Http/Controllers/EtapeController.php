@@ -42,8 +42,17 @@ class EtapeController extends Controller
         $etape->fill($request->all());
     
         // Handle file upload if present
+        // if ($request->hasFile('pieces_jointes')) {
+        //     $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
+        // }
+        // if ($request->hasFile('image')) {
+        //     $imagePath = $request->file('image')->store('public/photos');
+        //     $evenement->image = str_replace('public/', '', $imagePath);
+        // }
+
         if ($request->hasFile('pieces_jointes')) {
-            $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
+            $imagePath = $request->file('pieces_jointes')->store('public/pieces_jointes');
+            $etape->pieces_jointes = str_replace('public/', '', $imagePath);
         }
 
         // Add the guide_id foriegn key
@@ -58,35 +67,48 @@ class EtapeController extends Controller
     
     
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Etape $etape)
-    {
-        //
+    // Fonctionnalité pour mettre à jour une étape et enregistrer les modifications dans la base de données
+    public function update(Request $request, $id)
+{
+    // Find the existing Etape by ID
+    $etape = Etape::find($id);
+    if (!$etape) {
+        return response()->json(['message' => 'Etape non trouvée'], 404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Etape $etape)
-    {
-        //
+    // Validate the request data
+    $request->validate([
+        'libelle' => 'required|string',
+        'pieces_jointes' => 'nullable|file'
+    ]);
+
+    // Update only the fields that are allowed
+    $etape->fill($request->except('id'));
+
+    // Handle the file upload if provided
+    if ($request->hasFile('pieces_jointes')) {
+        $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateEtapeRequest $request, Etape $etape)
-    {
-        //
-    }
+    // Save the updated model
+    $etape->save();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Etape $etape)
+    return response()->json(['message' => 'Etape mise à jour avec succès'], 200);
+}
+
+    
+
+
+
+
+    // Fonctionnalité pour supprimer une étape
+    public function delete($id)
     {
-        //
+        $etape = Etape::find($id);
+        if (!$etape) {
+            return response()->json(['message' => 'Etape non trouvée'], 404);
+        }
+        $etape->delete();
+        return response()->json(['message' => 'Etape supprimée avec succès'], 200);
     }
 }

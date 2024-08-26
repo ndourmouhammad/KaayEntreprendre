@@ -171,6 +171,9 @@ Route::middleware("auth")->group(function () {
     Route::post('/restore-guides/{id}', [GuideController::class, 'restore'])->middleware('permission:restaurer_guide_supprimé');
     Route::post('/force-delete-guides/{id}', [GuideController::class, 'forceDelete'])->middleware('permission:supprimer_guide_supprimé');
     Route::post('/etapes', [EtapeController::class, 'store'])->middleware('permission:ajouter_etape');
+    Route::post('/etapes/{id}', [EtapeController::class, 'update']);
+    Route::delete('/etapes/{id}', [EtapeController::class, 'delete']);
+    
 
 // Demande Accompagnement
 Route::post('accompagnement/{receiverId}', [AccompagnementPersonnaliseController::class, 'demanderAccompagnementPersonnalise']);
