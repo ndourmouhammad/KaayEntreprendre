@@ -60,7 +60,7 @@ namespace App\Http\Controllers\Annotations ;
 
 
  * @OA\POST(
- *     path="/api/evenements/{id}/reservation",
+ *     path="/api/evenements/2/reservation",
  *     summary="Faire une reservation",
  *     description="",
  *         security={
