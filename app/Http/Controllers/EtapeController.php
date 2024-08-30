@@ -86,8 +86,13 @@ class EtapeController extends Controller
     $etape->fill($request->except('id'));
 
     // Handle the file upload if provided
+    // if ($request->hasFile('pieces_jointes')) {
+    //     $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
+    // }
+
     if ($request->hasFile('pieces_jointes')) {
-        $etape->pieces_jointes = $request->file('pieces_jointes')->store('public/pieces_jointes');
+        $imagePath = $request->file('pieces_jointes')->store('public/pieces_jointes');
+        $etape->pieces_jointes = str_replace('public/', '', $imagePath);
     }
 
     // Save the updated model

@@ -1,18 +1,19 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Evenement;
 use App\Models\Reservation;
-use App\Mail\ReservationNotification;
-use App\Mail\ReservationConfirmed;
-use App\Mail\ReservationAccepted;
-use App\Mail\ReservationRefuse;
-use Illuminate\Support\Facades\Mail;
-use App\Notifications\ReservationRejected;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Validator;
+use App\Mail\ReservationRefuse;
+use App\Mail\ReservationAccepted;
+use App\Mail\ReservationConfirmed;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationNotification;
+use Illuminate\Support\Facades\Validator;
+use App\Notifications\ReservationRejected;
+use Illuminate\Support\Facades\Notification;
 
 class ReservationController extends Controller
 {
@@ -42,7 +43,7 @@ class ReservationController extends Controller
         'data' => $reservations
     ], 200);
 }
-   public function reserver(Request $request, $evenement_id)
+public function reserver(Request $request, $evenement_id)
 {
     // Vérifier si l'utilisateur a déjà réservé pour cet événement
     $existingReservation = Reservation::where('evenement_id', $evenement_id)
@@ -53,6 +54,24 @@ class ReservationController extends Controller
         return response()->json([
             "status" => false,
             "message" => "Vous avez déjà réservé pour cet événement.",
+        ], 400);
+    }
+
+    // Récupérer l'événement pour vérifier le nombre de places disponibles
+    $evenement = Evenement::find($evenement_id);
+
+    if (!$evenement) {
+        return response()->json([
+            "status" => false,
+            "message" => "Événement non trouvé.",
+        ], 404);
+    }
+
+    // Vérifier s'il y a des places disponibles
+    if ($evenement->nombre_places <= 0) {
+        return response()->json([
+            "status" => false,
+            "message" => "Aucune place disponible pour cet événement.",
         ], 400);
     }
 
@@ -83,6 +102,10 @@ class ReservationController extends Controller
     // Créer la réservation
     $reservation = Reservation::create($data);
 
+    // Déduire le nombre de places disponibles
+    $evenement->nombre_places -= 1;
+    $evenement->save();
+
     // Envoyer une notification par email à l'utilisateur
     Mail::to($reservation->user->email)->send(new ReservationNotification($reservation));
 
@@ -92,6 +115,7 @@ class ReservationController extends Controller
         "data" => $reservation
     ], 201);
 }
+
 
 
     public function confirmerReservation($reservation_id)
@@ -147,4 +171,19 @@ class ReservationController extends Controller
             "data" => $reservation
         ], 200);
     }
+
+    public function checkUserReservation($evenement_id)
+{
+    // Vérifier si l'utilisateur a déjà réservé pour cet événement
+    $existingReservation = Reservation::where('evenement_id', $evenement_id)
+                                       ->where('user_id', auth()->id())
+                                       ->exists();
+
+    return response()->json([
+        "status" => true,
+        "message" => "Vérification de la réservation effectuée.",
+        "hasReserved" => $existingReservation
+    ], 200);
+}
+
 }
